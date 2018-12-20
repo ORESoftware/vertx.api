@@ -7,9 +7,12 @@ import io.vertx.ext.jdbc.JDBCClient;
 import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLClient;
 import io.vertx.ext.sql.SQLConnection;
+import org.apache.log4j.Logger;
 
 
 public class MainVerticle extends AbstractVerticle {
+  
+  static Logger log = Logger.getLogger(MainVerticle.class);
   
   @Override
   public void start() {
@@ -41,6 +44,9 @@ public class MainVerticle extends AbstractVerticle {
       
       
       SQLConnection connection = res.result();
+      
+//      String v = `
+//      `;
       
       connection.query("SELECT * FROM account", results -> {
         

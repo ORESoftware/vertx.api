@@ -11,7 +11,12 @@
 
   <properties>
     <vertx.version>3.6.0</vertx.version>
-    <main.verticle>huru.MainVerticle</main.verticle>
+    <main.class>huru.Start</main.class>
+    <!--<main.verticle>huru.verticle.MainVerticle</main.verticle>-->
+    <spring.data.jpa.version>1.8.0.RELEASE</spring.data.jpa.version>
+    <h2.version>1.4.191</h2.version>
+    <slf4j.version>1.7.21</slf4j.version>
+    <hibernate.version>4.3.10.Final</hibernate.version>
   </properties>
 
   <dependencyManagement>
@@ -28,17 +33,31 @@
 
   <dependencies>
 
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-entitymanager</artifactId>
+      <version>${hibernate.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
+      <version>${spring.data.jpa.version}</version>
+    </dependency>
+
 
     <dependency>
       <groupId>log4j</groupId>
       <artifactId>log4j</artifactId>
       <version>1.2.17</version>
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.7</version>
     </dependency>
+
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -46,8 +65,20 @@
     </dependency>
 
     <dependency>
+      <groupId>com.h2database</groupId>
+      <artifactId>h2</artifactId>
+      <version>${h2.version}</version>
+    </dependency>
+
+    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-mysql-postgresql-client</artifactId>
+      <version>3.6.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
       <version>3.6.2</version>
     </dependency>
 
@@ -93,8 +124,9 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.5.1</version>
           <configuration>
-            <source>1.8</source>
-            <target>1.8</target>
+            <source>12</source>
+            <target>9</target>
+            <useIncrementalCompilation>true</useIncrementalCompilation>
           </configuration>
         </plugin>
       </plugins>
@@ -116,7 +148,7 @@
                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                   <manifestEntries>
                     <Main-Class>io.vertx.core.Launcher</Main-Class>
-                    <Main-Verticle>${main.verticle}</Main-Verticle>
+                    <Main-Verticle>${main.class}</Main-Verticle>
                   </manifestEntries>
                 </transformer>
                 <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
@@ -136,11 +168,20 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>1.5.0</version>
         <configuration>
-          <mainClass>io.vertx.core.Launcher</mainClass>
+          <!--<mainClass>io.vertx.core.Launcher</mainClass>-->
+          <mainClass>${main.class}</mainClass>
           <arguments>
             <argument>run</argument>
-            <argument>${main.verticle}</argument>
+            <argument>${main.class}</argument>
           </arguments>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>10</source>
+          <target>10</target>
         </configuration>
       </plugin>
     </plugins>

@@ -9,8 +9,8 @@
         <module name="vertx-start-project" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="vertx-start-project" target="1.8" />
+    <bytecodeTargetLevel target="12">
+      <module name="vertx-start-project" target="10" />
     </bytecodeTargetLevel>
   </component>
 </project>

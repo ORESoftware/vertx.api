@@ -61,7 +61,6 @@ public class MainVerticle extends AbstractVerticle {
 //    final Vertx vertx = Vertx.vertx();
     
     final Router router = Router.router(vertx);
-    
     final EventBus eventBus = vertx.eventBus();
     
     eventBus.consumer("address", receivedMessage -> {

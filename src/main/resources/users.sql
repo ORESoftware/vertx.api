@@ -1,11 +1,11 @@
-DROP TABLE IF EXISTS USER;
+DROP TABLE IF EXISTS HURU_USER;
 
-CREATE TABLE USER(
+CREATE TABLE HURU_USER(
   id INTEGER,
-  description VARCHAR2(1000)
+  description VARCHAR(1000)
 );
 
-INSERT INTO USER (id, description) VALUES (1, 'product 1');
-INSERT INTO USER (id, description) VALUES (2, 'product 2');
-INSERT INTO USER (id, description) VALUES (1, 'product 3');
-INSERT INTO USER (id, description) VALUES (4, 'product 4');
+INSERT INTO HURU_USER (id, description) VALUES (1, 'product 1');
+INSERT INTO HURU_USER (id, description) VALUES (2, 'product 2');
+INSERT INTO HURU_USER (id, description) VALUES (1, 'product 3');
+INSERT INTO HURU_USER (id, description) VALUES (4, 'product 4');

@@ -26,7 +26,8 @@
     <loaded-nodes>
       <connection connection-id="ded54b10-3d66-4335-8047-307b6f80a4b2">
         <schema name="pg_catalog" object-types="function" />
-        <schema name="public" object-types="table, sequence, constraint, index, dataset trigger, function, column, view" />
+        <schema name="pg_toast_temp_1" object-types="function, view, table, sequence" />
+        <schema name="public" object-types="function, index, view, dataset trigger, column, table, sequence, constraint" />
       </connection>
     </loaded-nodes>
   </component>
@@ -42,6 +43,7 @@
     <connection id="ded54b10-3d66-4335-8047-307b6f80a4b2" />
   </component>
   <component name="DBNavigator.Project.DatasetFilterManager">
+    <filter-list connection-id="ded54b10-3d66-4335-8047-307b6f80a4b2" dataset="public.huru_user" active-filter-id="" />
     <filter-list connection-id="ded54b10-3d66-4335-8047-307b6f80a4b2" dataset="public.account" active-filter-id="" />
   </component>
   <component name="DBNavigator.Project.EditorStateManager">

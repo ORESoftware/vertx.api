@@ -9,14 +9,13 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 /**
  * Runner for the vertx-spring sample
- *
  */
 public class Start {
   
-  public static void main( String[] args ) {
+  public static void main(String[] args) {
     ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
     final Vertx vertx = Vertx.vertx();
-    vertx.deployVerticle(new SpringVerticle(vertx,ctx));
+    vertx.deployVerticle(new SpringVerticle(vertx, ctx));
     vertx.deployVerticle(new MainVerticle(vertx));
     System.out.println("Deployment done");
   }

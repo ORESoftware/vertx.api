@@ -8,3 +8,5 @@ https://medium.com/@hakdogan/working-with-multiple-verticles-and-communication-b
 https://github.com/vert-x3/vertx-examples/blob/master/spring-examples/spring-example/src/main/resources/application.properties
 
 https://vertx.io/docs/vertx-core/java/
+
+https://shekhargulati.com/2018/01/09/programmatically-generating-database-schema-with-hibernate-5/

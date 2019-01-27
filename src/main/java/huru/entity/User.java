@@ -10,7 +10,7 @@ import javax.persistence.Table;
  * Trivial JPA entity for vertx-spring demo
  */
 @Entity
-@Table(name="USER")
+@Table(name="HURU_USER")
 public class User {
   
   @Id

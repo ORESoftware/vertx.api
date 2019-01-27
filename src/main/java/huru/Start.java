@@ -14,10 +14,10 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 public class Start {
   
   public static void main( String[] args ) {
-    ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+    ApplicationContext ctx = new AnnotationConfigApplicationContext(SpringConfiguration.class);
     final Vertx vertx = Vertx.vertx();
-    vertx.deployVerticle(new SpringVerticle(context));
-    vertx.deployVerticle(new MainVerticle());
+    vertx.deployVerticle(new SpringVerticle(vertx,ctx));
+    vertx.deployVerticle(new MainVerticle(vertx));
     System.out.println("Deployment done");
   }
   

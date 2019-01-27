@@ -22,6 +22,10 @@ public class MainVerticle extends AbstractVerticle {
   
   static Logger log = Logger.getLogger(MainVerticle.class);
   
+  public MainVerticle(final Vertx vertx){
+    this.vertx = vertx;
+  }
+  
   private Future<Void> deployHelper(String name) {
     
     final Future<Void> future = Future.future();
@@ -140,11 +144,11 @@ public class MainVerticle extends AbstractVerticle {
           
           if (req.path().equals("/products")) {
             
-            vertx.eventBus().<String>send(SpringVerticle.ALL_PRODUCTS_ADDRESS, "", result -> {
-              if (result.succeeded()) {
-                req.response().setStatusCode(200).write(result.result().body()).end();
+            vertx.eventBus().<String>send(SpringVerticle.ALL_PRODUCTS_ADDRESS, "", r -> {
+              if (r.succeeded()) {
+                req.response().setStatusCode(200).write(r.result().body()).end();
               } else {
-                req.response().setStatusCode(500).write(result.cause().toString()).end();
+                req.response().setStatusCode(500).write(r.cause().toString()).end();
               }
             });
             

@@ -40,13 +40,13 @@ public class SpringConfiguration {
   @Bean
   @Autowired
   public DataSource dataSource(DatabasePopulator populator) {
-    final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-    dataSource.setDriverClassName(env.getProperty("jdbc.driverClassName"));
-    dataSource.setUrl(env.getProperty("jdbc.url"));
-    dataSource.setUsername(env.getProperty("jdbc.username"));
-    dataSource.setPassword(env.getProperty("jdbc.password"));
-    DatabasePopulatorUtils.execute(populator, dataSource);
-    return dataSource;
+    final DriverManagerDataSource ds = new DriverManagerDataSource();
+    ds.setDriverClassName(env.getProperty("jdbc.driverClassName"));
+    ds.setUrl(env.getProperty("jdbc.url"));
+    ds.setUsername(env.getProperty("jdbc.username"));
+    ds.setPassword(env.getProperty("jdbc.password"));
+    DatabasePopulatorUtils.execute(populator, ds);
+    return ds;
   }
   
   @Bean

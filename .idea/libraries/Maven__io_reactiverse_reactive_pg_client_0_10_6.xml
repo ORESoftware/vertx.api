@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: io.reactiverse:reactive-pg-client:0.10.6">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactiverse/reactive-pg-client/0.10.6/reactive-pg-client-0.10.6.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactiverse/reactive-pg-client/0.10.6/reactive-pg-client-0.10.6-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactiverse/reactive-pg-client/0.10.6/reactive-pg-client-0.10.6-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

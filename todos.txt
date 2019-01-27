@@ -10,3 +10,7 @@ https://github.com/vert-x3/vertx-examples/blob/master/spring-examples/spring-exa
 https://vertx.io/docs/vertx-core/java/
 
 https://shekhargulati.com/2018/01/09/programmatically-generating-database-schema-with-hibernate-5/
+
+https://github.com/jklingsporn/vertx-jooq
+
+https://github.com/reactiverse/reactive-pg-client

@@ -16,7 +16,7 @@ public class AsyncTest {
   
 
   @Test
-  public void test(TestContext tc) {
+  public void testParallel(TestContext tc) {
     
     Async z = tc.async();
   
@@ -28,6 +28,79 @@ public class AsyncTest {
   
     ), (e, results) -> {
     
+      if(e != null){
+        z.complete();
+      }
+      else{
+        z.complete();
+      }
+      
+    });
+  }
+  
+  @Test
+  public void testParallelLimit(TestContext tc) {
+    
+    Async z = tc.async();
+    
+    Asyncc.ParallelLimit(1, Arrays.asList(
+      
+      v -> {
+        v.done(null, null);
+      },
+  
+      v -> {
+        v.done(null, null);
+      },
+  
+      v -> {
+        
+        v.done(null, null);
+      },
+  
+      v -> {
+       new Thread(() -> {
+         try{
+           Thread.sleep(5000);
+         }
+         catch(Exception e){
+           System.out.println(e);
+         }
+           v.done(null, null);
+         })
+         .start();
+      },
+  
+      v -> {
+        v.done(null, null);
+      },
+  
+      v -> {
+        v.done(null, null);
+      },
+  
+      v -> {
+        new Thread(() -> {
+          try{
+            Thread.sleep(5000);
+          }
+          catch(Exception e){
+            System.out.println(e);
+          }
+         
+          v.done(null, null);
+        })
+          .start();
+      },
+  
+      v -> {
+        v.done(null, null);
+      }
+    
+    ), (e, results) -> {
+      
+      System.out.println("DDDDDDDAMN");
+      
       if(e != null){
         z.complete();
       }

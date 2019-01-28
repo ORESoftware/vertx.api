@@ -5,11 +5,43 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
+class Limit {
+  private int val;
+  private int current = 0;
+  
+  public Limit(int val){
+    this.val = val;
+  }
+  
+  public Limit(){
+    this.val = 1;
+  }
+  
+  public int getVal(){
+    return this.val;
+  }
+  
+  public int getCurrent(){
+    return this.current;
+  }
+  
+  public void increment(){
+    this.current++;
+  }
+  
+  public void decrement(){
+    this.current--;
+  }
+  
+  public boolean isBelowCapacity(){
+    return this.current < this.val;
+  }
+  
+}
 
 class Counter {
   
-  int val = 0;
+  private int val = 0;
   
   void increment() {
     this.val++;
@@ -50,6 +82,9 @@ public class Asyncc {
     });
   }
   
+  
+
+  
   public static <T, E> void Parallel(List<AsyncTask> tasks, FinalCallback f) {
     
     List<Object> results = new ArrayList<Object>(Collections.nCopies(tasks.size(), 0));
@@ -76,6 +111,56 @@ public class Asyncc {
         
       });
       
+    }
+    
+  }
+  
+  public static <T, E> void ParallelLimit(int limit,List<AsyncTask> tasks, FinalCallback f) {
+    
+    Limit lim = new Limit(limit);
+    
+    List<Object> results = new ArrayList<Object>(Collections.nCopies(tasks.size(), 0));
+    Counter c = new Counter();
+    
+    RunTasksLimit(tasks, results, c, lim, f);
+    
+  }
+  
+  private static void RunTasksLimit(List<AsyncTask> tasks, List<Object> results, Counter c, Limit lim, FinalCallback f) {
+    
+    if (c.getVal() >= (tasks.size() - 1)) {
+//      f.run(null, results);
+      return;
+    }
+    
+    AsyncTask t = tasks.get(c.getVal());
+    lim.increment();
+    
+    t.run((e, v) -> {
+      
+      if (e != null) {
+        f.run(e, null);
+        return;
+      }
+      
+      results.set(c.getVal(), v);
+      
+      lim.decrement();
+      c.increment();
+      
+      if (c.getVal() >= (tasks.size() -1)) {
+        f.run(null, results);
+        return;
+      }
+      
+      if(lim.isBelowCapacity()){
+        RunTasksLimit(tasks, results, c, lim,f);
+      }
+      
+    });
+    
+    if(lim.isBelowCapacity()){
+      RunTasksLimit(tasks, results, c, lim,f);
     }
     
   }

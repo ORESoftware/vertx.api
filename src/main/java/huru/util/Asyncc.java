@@ -2,29 +2,17 @@ package huru.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-interface AsyncCallback {
-  //  public void done(Object v);
-//  public void fail(Object e);
-  public void done(Object e, Object v);
-  
-}
 
-interface AsyncTask {
-  public void run(AsyncCallback cb);
-}
-
-interface FinalCallback {
-  public void run(Object e, List<Object> v);
-}
 
 class Counter {
   
   int val = 0;
   
   void increment() {
-     this.val++;
+    this.val++;
   }
   
   int getVal() {
@@ -32,10 +20,26 @@ class Counter {
   }
 }
 
-public class Async {
+public class Asyncc {
   
-  public void run() {
-    Async.Parallel(Arrays.asList(
+  public static interface AsyncCallback {
+    //  public void done(Object v);
+//  public void fail(Object e);
+    public void done(Object e, Object v);
+    
+  }
+  
+  public static interface AsyncTask {
+    public void run(AsyncCallback cb);
+  }
+  
+  public static interface FinalCallback {
+    public void run(Object e, List<Object> v);
+  }
+  
+  
+  public static void main() {
+    Asyncc.Parallel(Arrays.asList(
       
       v -> {
         v.done(null, null);
@@ -44,12 +48,11 @@ public class Async {
     ), (e, results) -> {
     
     });
-    
   }
   
-  static <T, E> void Parallel(List<AsyncTask> tasks, FinalCallback f) {
+  public static <T, E> void Parallel(List<AsyncTask> tasks, FinalCallback f) {
     
-    List<Object> results = new ArrayList<Object>();
+    List<Object> results = new ArrayList<Object>(Collections.nCopies(tasks.size(), 0));
     boolean error = false;
     Counter c = new Counter();
     
@@ -77,17 +80,17 @@ public class Async {
     
   }
   
-  private static void RunTasksSerially(List<AsyncTask> tasks, ArrayList<Object> results, Counter c, FinalCallback f){
+  private static void RunTasksSerially(List<AsyncTask> tasks, List<Object> results, Counter c, FinalCallback f) {
     
-    if(c.getVal() > tasks.size()){
-        f.run(null, results);
-        return;
+    if (c.getVal() >= tasks.size()) {
+      f.run(null, results);
+      return;
     }
     
     AsyncTask t = tasks.get(c.getVal());
     
-    t.run((e,v) -> {
-  
+    t.run((e, v) -> {
+      
       if (e != null) {
         f.run(e, null);
         return;
@@ -99,7 +102,7 @@ public class Async {
         f.run(null, results);
         return;
       }
-  
+      
       c.increment();
       RunTasksSerially(tasks, results, c, f);
       
@@ -107,34 +110,18 @@ public class Async {
     
   }
   
-  static <T, E> void Series(List<AsyncTask> tasks, FinalCallback f) {
+  public static <T, E> void Series(List<AsyncTask> tasks, FinalCallback f) {
     
-    List<Object> results = new ArrayList<Object>();
+    List<Object> results = new ArrayList<Object>(Collections.nCopies(tasks.size(), 0));
+    
     boolean error = false;
     Counter c = new Counter();
     
-    if(tasks.size() < 1){
-      f.run(null, Arrays.asList());
+    if (tasks.size() < 1) {
+      f.run(null, Collections.emptyList());
       return;
     }
-      
-      tasks.get(i).run((e, v) -> {
-        
-        if (e != null) {
-          f.run(e, null);
-          return;
-        }
-        
-        c.increment();
-        results.set(index, v);
-        
-        if (c.getVal() == tasks.size()) {
-          f.run(null, results);
-        }
-        
-      });
-      
     
-    
+    RunTasksSerially(tasks, results, c, f);
   }
 }

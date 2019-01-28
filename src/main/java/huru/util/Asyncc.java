@@ -41,14 +41,23 @@ class Limit {
 
 class Counter {
   
-  private int val = 0;
+  private int started = 0;
+  private int finished = 0;
   
-  void increment() {
-    this.val++;
+  void incrementStarted() {
+    this.started++;
   }
   
-  int getVal() {
-    return this.val;
+  void incrementFinished() {
+    this.finished++;
+  }
+  
+  int getStartedCount() {
+    return this.started;
+  }
+  
+  int getFinishedCount() {
+    return this.finished;
   }
 }
 
@@ -102,10 +111,10 @@ public class Asyncc {
           return;
         }
         
-        c.increment();
+        c.incrementFinished();
         results.set(index, v);
         
-        if (c.getVal() == tasks.size()) {
+        if (c.getFinishedCount() == tasks.size()) {
           f.run(null, results);
         }
         
@@ -128,13 +137,15 @@ public class Asyncc {
   
   private static void RunTasksLimit(List<AsyncTask> tasks, List<Object> results, Counter c, Limit lim, FinalCallback f) {
     
-    if (c.getVal() >= (tasks.size() - 1)) {
+    if (c.getStartedCount() >= tasks.size()){
 //      f.run(null, results);
       return;
     }
-    
-    AsyncTask t = tasks.get(c.getVal());
+  
+    final int val = c.getStartedCount();
+    AsyncTask t = tasks.get(val);
     lim.increment();
+    c.incrementStarted();
     
     t.run((e, v) -> {
       
@@ -143,12 +154,11 @@ public class Asyncc {
         return;
       }
       
-      results.set(c.getVal(), v);
-      
+      results.set(val, v);
       lim.decrement();
-      c.increment();
+      c.incrementFinished();
       
-      if (c.getVal() >= (tasks.size() -1)) {
+      if (c.getFinishedCount() == tasks.size()) {
         f.run(null, results);
         return;
       }
@@ -159,6 +169,11 @@ public class Asyncc {
       
     });
     
+    
+    if(c.getStartedCount() >= tasks.size()){
+      return;
+    }
+    
     if(lim.isBelowCapacity()){
       RunTasksLimit(tasks, results, c, lim,f);
     }
@@ -167,12 +182,15 @@ public class Asyncc {
   
   private static void RunTasksSerially(List<AsyncTask> tasks, List<Object> results, Counter c, FinalCallback f) {
     
-    if (c.getVal() >= tasks.size()) {
-      f.run(null, results);
+    final int startedCount = c.getStartedCount();
+    
+    if (startedCount >= tasks.size()) {
+//      f.run(null, results);
       return;
     }
     
-    AsyncTask t = tasks.get(c.getVal());
+    AsyncTask t = tasks.get(startedCount);
+    c.incrementStarted();
     
     t.run((e, v) -> {
       
@@ -180,15 +198,15 @@ public class Asyncc {
         f.run(e, null);
         return;
       }
+  
+      c.incrementFinished();
+      results.set(startedCount, v);
       
-      results.set(c.getVal(), v);
-      
-      if (c.getVal() == tasks.size()) {
+      if (c.getFinishedCount() == tasks.size()) {
         f.run(null, results);
         return;
       }
       
-      c.increment();
       RunTasksSerially(tasks, results, c, f);
       
     });

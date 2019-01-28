@@ -43,7 +43,7 @@ public class AsyncTest {
     
     Async z = tc.async();
     
-    Asyncc.ParallelLimit(1, Arrays.asList(
+    Asyncc.ParallelLimit(2, Arrays.asList(
       
       v -> {
         v.done(null, null);

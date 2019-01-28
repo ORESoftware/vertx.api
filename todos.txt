@@ -24,6 +24,7 @@ https://vertx.io/docs/vertx-rabbitmq-client/java/
 
 https://dzone.com/articles/vertx-and-fiber-perfect-synergy
 
+https://stackoverflow.com/questions/54397383/add-data-to-the-routingcontext-of-vert-x-middleware/54398509?noredirect=1#comment95611962_54398509
 
 https://stackoverflow.com/questions/54394784/deserialize-request-body-to-specific-class-instead-of-jsonobject/54395286?noredirect=1#comment95602697_54395286
 

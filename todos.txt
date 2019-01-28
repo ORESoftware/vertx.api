@@ -18,3 +18,36 @@ https://github.com/reactiverse/reactive-pg-client
 https://github.com/vert-x3/vertx-examples/blob/master/web-examples/src/main/java/io/vertx/example/web/rest/SimpleREST.java
 
 https://hackernoon.com/vert-x-understanding-core-concepts-1529917658b3
+
+https://vertx.io/docs/vertx-rabbitmq-client/java/
+
+
+https://dzone.com/articles/vertx-and-fiber-perfect-synergy
+
+
+https://stackoverflow.com/questions/54394784/deserialize-request-body-to-specific-class-instead-of-jsonobject/54395286?noredirect=1#comment95602697_54395286
+
+    final EventBus eventBus = vertx.eventBus();
+
+    eventBus.consumer("address", receivedMessage -> {
+      log.debug("Received message: " + receivedMessage.body());
+      receivedMessage.reply("my reply");
+    });
+
+
+    router.route(HttpMethod.GET, "/hello/:name").handler(ctx -> {
+      // Retrieving request and response objects
+      HttpServerRequest request = ctx.request();
+      HttpServerResponse response = ctx.response();
+
+
+      // Get the name parameter
+      String name = request.getParam("name");
+
+      // Manage output response
+      response.putHeader("Content-Type", "text/plain");
+      response.setChunked(true);
+      response.write("Hello " + name);
+      response.setStatusCode(200);
+      response.end();
+    });

@@ -1,6 +1,8 @@
 package huru;
 
 import huru.middleware.JWTHandler;
+import huru.routes.KCClass;
+import huru.routes.KCUser;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
@@ -9,6 +11,7 @@ import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.sql.SQLRowStream;
+import io.vertx.ext.sync.Sync;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.asyncsql.PostgreSQLClient;
 import io.vertx.ext.jdbc.JDBCClient;
@@ -41,9 +44,6 @@ public class MainVerticle extends AbstractVerticle {
     return future;
   }
   
-  private void sendMessage(RoutingContext rc) {
-  
-  }
   
   @Override
   public void start(Future<Void> f) throws Exception {
@@ -59,61 +59,6 @@ public class MainVerticle extends AbstractVerticle {
 
 //    final Vertx vertx = Vertx.vertx();
     
-    final Router router = Router.router(vertx);
-//    final Router router = mainRouter.mountSubRouter("/api",mainRouter);
-  
-    router.route()
-      .handler(BodyHandler.create())
-      .handler(new JWTHandler());
-    
-    
-    final EventBus eventBus = vertx.eventBus();
-    
-    eventBus.consumer("address", receivedMessage -> {
-      log.debug("Received message: " + receivedMessage.body());
-      receivedMessage.reply("my reply");
-    });
-    
-    router.route(HttpMethod.GET, "/hello/:name").handler(ctx -> {
-      // Retrieving request and response objects
-      HttpServerRequest request = ctx.request();
-      HttpServerResponse response = ctx.response();
-      
-      
-      // Get the name parameter
-      String name = request.getParam("name");
-      
-      // Manage output response
-      response.putHeader("Content-Type", "text/plain");
-      response.setChunked(true);
-      response.write("Hello " + name);
-      response.setStatusCode(200);
-      response.end();
-    });
-    
-    router.route("/")
-//      .handler(new JWTHandler())
-      .handler(ctx -> {
-        HttpServerResponse response = ctx.response();
-        response
-          .putHeader("content-type", "text/html")
-          .end("<h1>Hello from non-clustered messenger example!</h1>");
-      });
-    
-    router.post("/send/:message").handler(this::sendMessage);
-
-//    router.route().failureHandler(ctx -> {
-//      if (ctx.statusCode() == 404) {
-//        // do what you want
-//      }
-//    });
-    
-    router.route().last().handler(ctx -> {
-      ctx.response()
-        .setStatusCode(404)
-        .end("404 - route/resource could not be found.");
-    });
-    
     JsonObject config = new JsonObject()
       .put("username", "postgres")
       .put("password", "postgres")
@@ -122,53 +67,30 @@ public class MainVerticle extends AbstractVerticle {
       .put("host", "localhost")
       .put("port", 5432);
     
-    SQLClient client = PostgreSQLClient.createShared(vertx, config);
+    final SQLClient client = PostgreSQLClient.createShared(vertx, config);
+    final Router router = Router.router(vertx);
+//    final Router router = mainRouter.mountSubRouter("/api",mainRouter);
     
+    router.route()
+      .handler(BodyHandler.create())
+//      .handler(Sync.fiberHandler(new JWTHandler()));
+      .handler(new JWTHandler());
+  
+  
+    new KCUser(client)
+      .mount(router,"/api/user");
     
-    client.getConnection(res -> {
-      
-      if (!res.succeeded()) {
-        System.out.println("Here comes the cause:");
-        System.out.println(res.cause());
-        return;
-      }
-      
-      
-      SQLConnection connection = res.result();
-      
-      connection.queryStream("SELECT * FROM large_table; SELECT * FROM other_table", stream -> {
-        if (stream.succeeded()) {
-          SQLRowStream sqlRowStream = stream.result();
-          
-          sqlRowStream
-            .resultSetClosedHandler(v -> {
-              // will ask to restart the stream with the new result set if any
-              sqlRowStream.moreResults();
-            })
-            .handler(row -> {
-              // do something with the row...
-            })
-            .endHandler(v -> {
-              // no more data available...
-            });
-        }
-      });
-      
-      
-      String v = "";
-      
-      connection.query("SELECT * FROM account", results -> {
-        
-        if (!results.succeeded()) {
-          throw new Error("Could not connect to table.");
-        }
-        
-        ResultSet rs = results.result();
-        System.out.println("Connected and got results");
-        System.out.println(rs.toString());
-        
-      });
-      
+//    router.route("/api/user").handler(new KCUser(client));
+    router.route("/api/class").handler(new KCClass(client));
+    
+    router.route().failureHandler(ctx -> {
+       ctx.response().end("We failed here!");
+    });
+    
+    router.route().last().handler(ctx -> {
+      ctx.response()
+        .setStatusCode(404)
+        .end("404 - route/resource could not be found.");
     });
     
     

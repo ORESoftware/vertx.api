@@ -7,7 +7,7 @@ class KCClassModel extends BaseModel {
 public class KCClassEntity extends BaseEntity<KCClassModel> {
 
   public KCClassEntity(){
-    super(new KCClassModel());
+    super(KCClassModel.class);
   }
 
 }

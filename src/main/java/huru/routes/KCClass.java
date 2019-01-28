@@ -1,17 +1,38 @@
 package huru.routes;
 
+import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.ext.sql.SQLClient;
 import io.vertx.ext.web.RoutingContext;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class KCClass {
+public class KCClass implements Handler<RoutingContext> {
   
   private Map<String, JsonObject> products = new HashMap<>();
+  private SQLClient client;
   
+  public KCClass(SQLClient client) {
+    super();
+    this.client = client;
+  }
+  
+  @Override
+  public void handle(RoutingContext ctx) {
+    switch (ctx.request().method()) {
+      case GET:
+        handleAddProduct(ctx);
+        break;
+      case PUT:
+        handleAddProduct(ctx);
+        break;
+      default:
+        ctx.fail(new Exception("No method matched"));
+    }
+  }
   
   private void handleGetProduct(RoutingContext ctx) {
     

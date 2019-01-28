@@ -5,17 +5,24 @@ import java.util.Date;
 
 public class BaseEntity <T extends BaseModel> extends JsonObject {
   
-  private T model;
+  private Class<T> model;
   
-  public BaseEntity(T m){
+  public BaseEntity(Class<T> m){
     this.model = m;
   }
   
   public void setUpdateInfo(String user){
-    this.model.updatedBy = user;
-    this.model.updatedAt = new Date();
+//    this.model.updatedBy = user;
+//    this.model.updatedAt = new Date();
+  }
+  
+  public JsonObject toJsonObject(){
+    return JsonObject.mapFrom(this.model);
   }
   
   
+  public Class<T> getEntityType (){
+    return this.model;
+  }
   
 }

@@ -11,7 +11,9 @@
 
   <properties>
     <vertx.version>3.6.0</vertx.version>
+    <!--<main.class>huru.Start</main.class>-->
     <main.verticle>huru.MainVerticle</main.verticle>
+    <slf4j.version>1.7.21</slf4j.version>
   </properties>
 
   <dependencyManagement>
@@ -27,6 +29,7 @@
   </dependencyManagement>
 
   <dependencies>
+
 
     <dependency>
       <groupId>org.apache.logging.log4j</groupId>
@@ -52,6 +55,7 @@
       <version>1.7.7</version>
     </dependency>
 
+
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-mysql-postgresql-client</artifactId>
@@ -59,10 +63,11 @@
     </dependency>
 
     <dependency>
-      <groupId>org.hsqldb</groupId>
-      <artifactId>hsqldb</artifactId>
-      <version>2.2.8</version>
+      <groupId>io.vertx</groupId>
+      <artifactId>vertx-web</artifactId>
+      <version>3.6.2</version>
     </dependency>
+
 
     <dependency>
       <groupId>postgresql</groupId>
@@ -76,22 +81,15 @@
       <version>3.6.2</version>
     </dependency>
 
-
     <dependency>
-      <groupId>io.vertx</groupId>
-      <artifactId>vertx-web</artifactId>
-      <version>3.6.2</version>
+      <groupId>io.github.jklingsporn</groupId>
+      <artifactId>vertx-jooq-classic-reactive</artifactId>
+      <version>4.0.0</version>
     </dependency>
 
     <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-core</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>io.github.jklingsporn</groupId>
-      <artifactId>vertx-jooq-classic-reactive</artifactId>
-      <version>4.0.0</version>
     </dependency>
 
     <dependency>
@@ -106,12 +104,19 @@
       <artifactId>vertx-unit</artifactId>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>org.eclipse.jetty</groupId>
+          <artifactId>jetty-maven-plugin</artifactId>
+          <version>3.6.1</version>
+          <configuration>
+            <scanIntervalSeconds>0</scanIntervalSeconds>
+          </configuration>
+        </plugin>
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.5.1</version>
@@ -125,6 +130,15 @@
     </pluginManagement>
 
     <plugins>
+
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <configuration>
+          <scanIntervalSeconds>0</scanIntervalSeconds>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
@@ -161,15 +175,18 @@
         <version>1.5.0</version>
         <configuration>
           <mainClass>io.vertx.core.Launcher</mainClass>
+          <!--<mainClass>${main.class}</mainClass>-->
           <arguments>
             <argument>run</argument>
             <argument>${main.verticle}</argument>
+            <!--<argument>${main.class}</argument>-->
           </arguments>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.2</version>
         <configuration>
           <source>10</source>
           <target>10</target>

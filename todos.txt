@@ -14,3 +14,7 @@ https://shekhargulati.com/2018/01/09/programmatically-generating-database-schema
 https://github.com/jklingsporn/vertx-jooq
 
 https://github.com/reactiverse/reactive-pg-client
+
+https://github.com/vert-x3/vertx-examples/blob/master/web-examples/src/main/java/io/vertx/example/web/rest/SimpleREST.java
+
+https://hackernoon.com/vert-x-understanding-core-concepts-1529917658b3

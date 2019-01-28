@@ -1,9 +1,11 @@
-package huru.verticle;
+package huru;
 
+import huru.middleware.JWTHandler;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Vertx;
 import io.vertx.core.eventbus.EventBus;
 import io.vertx.core.http.HttpMethod;
+import io.vertx.core.http.HttpServerRequest;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.sql.SQLRowStream;
@@ -16,15 +18,12 @@ import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.log4j.Logger;
 import io.vertx.core.Future;
+import io.vertx.ext.web.handler.BodyHandler;
 
 
 public class MainVerticle extends AbstractVerticle {
   
-  static Logger log = Logger.getLogger(MainVerticle.class);
-  
-  public MainVerticle(final Vertx vertx){
-    this.vertx = vertx;
-  }
+  private final Logger log = Logger.getLogger(MainVerticle.class);
   
   private Future<Void> deployHelper(String name) {
     
@@ -61,6 +60,13 @@ public class MainVerticle extends AbstractVerticle {
 //    final Vertx vertx = Vertx.vertx();
     
     final Router router = Router.router(vertx);
+//    final Router router = mainRouter.mountSubRouter("/api",mainRouter);
+  
+    router.route()
+      .handler(BodyHandler.create())
+      .handler(new JWTHandler());
+    
+    
     final EventBus eventBus = vertx.eventBus();
     
     eventBus.consumer("address", receivedMessage -> {
@@ -68,18 +74,51 @@ public class MainVerticle extends AbstractVerticle {
       receivedMessage.reply("my reply");
     });
     
-    router.route("/").handler(routingContext -> {
-      HttpServerResponse response = routingContext.response();
-      response.putHeader("content-type", "text/html").end("<h1>Hello from non-clustered messenger example!</h1>");
+    router.route(HttpMethod.GET, "/hello/:name").handler(ctx -> {
+      // Retrieving request and response objects
+      HttpServerRequest request = ctx.request();
+      HttpServerResponse response = ctx.response();
+      
+      
+      // Get the name parameter
+      String name = request.getParam("name");
+      
+      // Manage output response
+      response.putHeader("Content-Type", "text/plain");
+      response.setChunked(true);
+      response.write("Hello " + name);
+      response.setStatusCode(200);
+      response.end();
     });
     
-    router.post("/send/:message").handler(this::sendMessage);
+    router.route("/")
+//      .handler(new JWTHandler())
+      .handler(ctx -> {
+        HttpServerResponse response = ctx.response();
+        response
+          .putHeader("content-type", "text/html")
+          .end("<h1>Hello from non-clustered messenger example!</h1>");
+      });
     
+    router.post("/send/:message").handler(this::sendMessage);
+
+//    router.route().failureHandler(ctx -> {
+//      if (ctx.statusCode() == 404) {
+//        // do what you want
+//      }
+//    });
+    
+    router.route().last().handler(ctx -> {
+      ctx.response()
+        .setStatusCode(404)
+        .end("404 - route/resource could not be found.");
+    });
     
     JsonObject config = new JsonObject()
       .put("username", "postgres")
       .put("password", "postgres")
       .put("database", "oleg")
+//      .put("host", "0.0.0.0")
       .put("host", "localhost")
       .put("port", 5432);
     
@@ -132,39 +171,47 @@ public class MainVerticle extends AbstractVerticle {
       
     });
     
+    
     int port = 3005;
     
     vertx.createHttpServer()
-      .requestHandler(req -> {
+      .exceptionHandler(ctx -> {
         
-        if (req.method() == HttpMethod.GET) {
-          
-          req.response().setChunked(true);
-          
-          if (req.path().equals("/products")) {
-            
-            vertx.eventBus().<String>send(SpringVerticle.ALL_PRODUCTS_ADDRESS, "", r -> {
-              if (r.succeeded()) {
-                req.response().setStatusCode(200).write(r.result().body()).end();
-              } else {
-                req.response().setStatusCode(500).write(r.cause().toString()).end();
-              }
-            });
-            
-            return;
-          }
-          
-          req.response().setStatusCode(200).write("Hello from vert.x").end();
-          return;
-          
-        }
-        
-        req.response()
-          .putHeader("content-type", "text/plain")
-          .end("Hello Vert.x!");
-        
+        log.error("In the exception handler.");
+        log.error(ctx.getCause());
         
       })
+      .requestHandler(router)
+//      .requestHandler(req -> {
+//
+//        if (req.method() == HttpMethod.GET) {
+//
+//          req.response().setChunked(true);
+//
+//          if (req.path().equals("/products")) {
+//
+//            vertx.eventBus().<String>send("whoooop", "", r -> {
+//              if (r.succeeded()) {
+//                req.response().setStatusCode(200).write(r.result().body()).end();
+//              } else {
+//                req.response().setStatusCode(500).write(r.cause().toString()).end();
+//              }
+//            });
+//
+//            return;
+//          }
+//
+//          req.response().setStatusCode(200).write("Hello from vert.x").end();
+//          return;
+//
+//        }
+//
+//        req.response()
+//          .putHeader("content-type", "text/plain")
+//          .end("Hello Vert.x!");
+//
+//
+//      })
       .listen(port, res -> {
         if (res.succeeded()) {
           System.out.println("Server listening on port " + port);
@@ -174,6 +221,7 @@ public class MainVerticle extends AbstractVerticle {
           f.fail(res.cause());
         }
       });
+    
   }
   
 }

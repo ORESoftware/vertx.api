@@ -1,39 +1,8 @@
 package huru.util;
 
 import java.util.*;
-
 import static java.util.Arrays.asList;
 
-interface One {
-  public void run();
-}
-
-interface Two {
-  public void run();
-}
-
-
-class Foo {
-  
-  public void zoom(One v) {
-  
-  }
-  
-  public void run() {
-    new Foo().zoom(() -> {
-    
-    });
-  }
-}
-
-class AT implements Asyncc.AsyncCallback {
-  
-  @Override
-  public void done(Object e, Object v) {
-  
-  }
-  
-}
 
 
 class Limit {
@@ -158,6 +127,18 @@ public class Asyncc {
       });
   }
   
+  public static <T, E> AsyncTask<List<T>, E> Parallel(AsyncTask<T,E>... tasks) {
+    return cb -> {
+      Asyncc.<T, E>Parallel(List.of(tasks), cb);
+    };
+  }
+  
+  public static <T, E> AsyncTask<List<T>, E> Series(AsyncTask<T,E>... tasks) {
+    return cb -> {
+      Asyncc.<T, E>Parallel(List.of(tasks), cb);
+    };
+  }
+  
   public static <T, E> AsyncTask<List<T>, E> Parallel(List<AsyncTask> tasks) {
     return cb -> {
       Asyncc.<T, E>Parallel(tasks, cb);
@@ -270,6 +251,7 @@ public class Asyncc {
     
   }
   
+  @SuppressWarnings("Duplicates")
   public static <T, E> void Parallel(List<AsyncTask> tasks, AsyncCallback<List<T>, E> f) {
     
     List<T> results = new ArrayList<T>(Collections.<T>nCopies(tasks.size(), null));

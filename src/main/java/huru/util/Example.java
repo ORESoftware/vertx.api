@@ -17,3 +17,35 @@ public class Example {
 //    System.out.println(adder.apply(2)); // 7
   }
 }
+
+
+interface One {
+  public void run();
+}
+
+interface Two {
+  public void run();
+}
+
+
+class Foo {
+  
+  public void zoom(One v) {
+  
+  }
+  
+  public void run() {
+    new Foo().zoom(() -> {
+    
+    });
+  }
+}
+
+class AT implements Asyncc.AsyncCallback {
+  
+  @Override
+  public void done(Object e, Object v) {
+  
+  }
+  
+}

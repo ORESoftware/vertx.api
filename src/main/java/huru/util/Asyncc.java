@@ -133,7 +133,7 @@ public class Asyncc {
   public static void main() {
     Asyncc.Series(asList(
       Asyncc.zoom(),
-      Asyncc.fParallel(asList(
+      Asyncc.Parallel(asList(
         z -> {
           z.done(null, null);
         },
@@ -158,13 +158,25 @@ public class Asyncc {
       });
   }
   
-  public static <T, E> AsyncTask<List<T>, E> fParallel(List<AsyncTask> tasks) {
+  public static <T, E> AsyncTask<List<T>, E> Parallel(List<AsyncTask> tasks) {
     return cb -> {
       Asyncc.<T, E>Parallel(tasks, cb);
     };
   }
   
-  public static <T, E> AsyncTask fSeries(List<AsyncTask> tasks) {
+  public static <T, E> AsyncTask<List<T>,E> Series(List<AsyncTask<T, E>> tasks) {
+    return cb -> {
+      Asyncc.<T, E>Series(tasks, cb);
+    };
+  }
+  
+  public static <T, E> AsyncTask<Map<String,T>, E> Parallel(Map<String, AsyncTask<T,E>> tasks) {
+    return cb -> {
+      Asyncc.<T, E>Parallel(tasks, cb);
+    };
+  }
+  
+  public static <T, E> AsyncTask<Map<String,T>, E> Series(Map<String, AsyncTask<T,E>> tasks) {
     return cb -> {
       Asyncc.<T, E>Series(tasks, cb);
     };
@@ -214,16 +226,17 @@ public class Asyncc {
     Asyncc.<T,E>RunMapLimit(entries, tasks, new HashMap<>(), c, lim, f);
     
   }
+  
   public static <T, E> void ParallelLimit(int limit, Map<String, AsyncTask<T, E>> tasks, AsyncCallback<Map<String, T>, E> f) {
     
     Map<String, T> results = new HashMap<>();
     boolean error = false;
     Counter c = new Counter();
     
-    Iterator entries = tasks.entrySet().iterator();
+    Iterator<Map.Entry<String, AsyncTask<T,E>>> entries = tasks.entrySet().iterator();
     Limit lim = new Limit(limit);
     
-    RunMapLimit(entries, tasks, new HashMap<>(), c, lim, f);
+    Asyncc.<T,E>RunMapLimit(entries, tasks, new HashMap<>(), c, lim, f);
     
   }
   
@@ -400,7 +413,7 @@ public class Asyncc {
     
   }
   
-  private static void RunTasksSerially(List<AsyncTask> tasks, List<Object> results, Counter c, AsyncCallback f) {
+  private static <T, E> void RunTasksSerially(List<AsyncTask<T, E>> tasks, List<T> results, Counter c, AsyncCallback<List<T>, E> f) {
     
     final int startedCount = c.getStartedCount();
     
@@ -415,12 +428,12 @@ public class Asyncc {
     t.run((e, v) -> {
       
       if (e != null) {
-        f.done(e, Collections.emptyList());
+        f.done((E)e, Collections.emptyList());
         return;
       }
       
       c.incrementFinished();
-      results.set(startedCount, v);
+      results.set(startedCount, (T)v);
       
       if (c.getFinishedCount() == tasks.size()) {
         f.done(null, results);
@@ -433,9 +446,9 @@ public class Asyncc {
     
   }
   
-  public static <T, E> void Series(List<AsyncTask> tasks, AsyncCallback f) {
+  public static <T, E> void Series(List<AsyncTask<T, E>> tasks, AsyncCallback<List<T>, E> f) {
     
-    List<Object> results = new ArrayList<Object>(Collections.nCopies(tasks.size(), 0));
+    List<T> results = new ArrayList<T>(Collections.nCopies(tasks.size(), null));
     
     boolean error = false;
     Counter c = new Counter();
@@ -445,6 +458,6 @@ public class Asyncc {
       return;
     }
     
-    RunTasksSerially(tasks, results, c, f);
+    Asyncc.<T, E>RunTasksSerially(tasks, results, c, f);
   }
 }

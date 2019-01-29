@@ -70,6 +70,34 @@ public class AsyncTest {
   }
   
   @Test
+  public void testParallelLimitMap(TestContext tc) {
+    
+    Async z = tc.async();
+    
+    Asyncc.<Integer,Object>ParallelLimit(3, Map.of(
+      
+      "foo",  v -> {
+        v.done(null, 2);
+      },
+      
+      "bar",  v -> {
+        v.done(null, 3);
+      }
+    
+    ), (e, results) -> {
+      
+      System.out.println(results.toString());
+      
+      if (e != null) {
+        z.complete();
+      } else {
+        z.complete();
+      }
+      
+    });
+  }
+  
+  @Test
   public void testParallelMap(TestContext tc) {
     
     Async z = tc.async();

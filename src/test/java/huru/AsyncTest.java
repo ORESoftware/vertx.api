@@ -9,10 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import io.vertx.ext.unit.Async;
+
 import static java.util.Arrays.asList;
 
 
 import java.util.Arrays;
+import java.util.Map;
 
 @RunWith(VertxUnitRunner.class)
 public class AsyncTest {
@@ -23,17 +25,21 @@ public class AsyncTest {
     
     Async z = tc.async();
     
-    Asyncc.<Integer, Object, Object>Map(asList(1, 2, 3),
+    Asyncc.<Integer, Integer, Object>Map(
+      
+      asList(1, 2, 3),
       
       (kv, cb) -> {
-      
         cb.done(null, kv.value + 2);
-      
+//        cb.done("foo", kv.value + 2);
       },
-      (e, results) -> {
       
+      (e, results) -> {
+        
+        System.out.println(results.toString());
+        
         if (e != null) {
-          z.complete();
+          throw new Error(e.toString());
         } else {
           z.complete();
         }
@@ -53,6 +59,34 @@ public class AsyncTest {
       }
     
     ), (e, results) -> {
+      
+      if (e != null) {
+        z.complete();
+      } else {
+        z.complete();
+      }
+      
+    });
+  }
+  
+  @Test
+  public void testParallelMap(TestContext tc) {
+    
+    Async z = tc.async();
+    
+    Asyncc.<Integer,Object>Parallel(Map.of(
+      
+      "foo",  v -> {
+        v.done(null, 2);
+      },
+      
+      "bar",  v -> {
+        v.done(null, 3);
+      }
+
+    ), (e, results) -> {
+      
+      System.out.println(results.toString());
       
       if (e != null) {
         z.complete();
@@ -160,7 +194,7 @@ public class AsyncTest {
         })
           .start();
       },
-  
+      
       v -> {
         new Thread(() -> {
           try {
@@ -168,12 +202,12 @@ public class AsyncTest {
           } catch (Exception e) {
             System.out.println(e);
           }
-      
+          
           v.done(null, null);
         })
           .start();
       },
-  
+      
       v -> {
         new Thread(() -> {
           try {

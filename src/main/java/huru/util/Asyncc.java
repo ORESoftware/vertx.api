@@ -1,9 +1,7 @@
 package huru.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
+
 import static java.util.Arrays.asList;
 
 interface One {
@@ -36,7 +34,6 @@ class AT implements Asyncc.AsyncCallback {
   }
   
 }
-
 
 
 class Limit {
@@ -97,19 +94,19 @@ class Counter {
 
 public class Asyncc {
   
-  public static class KeyValue <V>{
+  public static class KeyValue<V> {
     
     public String key;
     public V value;
     
-    public KeyValue(String key, V value){
+    public KeyValue(String key, V value) {
       this.key = key;
       this.value = value;
     }
   }
   
-  public static interface Mapper<V> {
-    public void map(KeyValue<V> v, AsyncCallback cb);
+  public static interface Mapper<V, T, E> {
+    public void map(KeyValue<V> v, AsyncCallback<T, E> cb);
   }
   
   public static interface AsyncCallback<T, E> {
@@ -161,8 +158,6 @@ public class Asyncc {
       });
   }
   
-  
-  
   public static <T, E> AsyncTask<List<T>, E> fParallel(List<AsyncTask> tasks) {
     return cb -> {
       Asyncc.<T, E>Parallel(tasks, cb);
@@ -175,47 +170,91 @@ public class Asyncc {
     };
   }
   
-  public int sumNumber(int a, int... args) {
-    System.out.println("argument length: " + args.length);
-    int sum = 0;
-    for (int x : args) {
-      sum += x;
-    }
-    return sum;
-  }
-  
-  
-  public static <V,T,E> void Map(List<?> items, Mapper<V> m, AsyncCallback<List<T>, E> f){
-  
+  public static <V, T, E> void Map(List<?> items, Mapper<V, T, E> m, AsyncCallback<List<T>, E> f) {
+    
     List<T> results = new ArrayList<T>(Collections.<T>nCopies(items.size(), null));
     Counter c = new Counter();
-  
-    for(int i = 0; i < items.size(); i++){
-  
+    
+    for (int i = 0; i < items.size(); i++) {
+      
       final int val = c.getStartedCount();
       c.incrementStarted();
       
-      KeyValue kv = new KeyValue(null,items.get(i));
+      KeyValue kv = new KeyValue(null, items.get(i));
       
-      m.map(kv,(e,v) -> {
-  
+      m.map(kv, (e, v) -> {
+        
         if (e != null) {
-          f.done((E) e, null);
+          f.done((E) e, Collections.emptyList());  // List.of()?
           return;
         }
-  
+        
         c.incrementFinished();
-        results.set(val,(T)v);
-  
+        results.set(val, (T) v);
+        
         if (c.getFinishedCount() == items.size()) {
           f.done(null, results);
         }
         
       });
       
+    }
+    
+  }
+  
+  public static <T, E> void Series(Map<String, AsyncTask<T, E>> tasks, AsyncCallback<Map<String, T>, E> f) {
+    
+    Map<String, T> results = new HashMap<>();
+    boolean error = false;
+    Counter c = new Counter();
+    
+    Iterator<Map.Entry<String, AsyncTask<T,E>>> entries = tasks.entrySet().iterator();
+    Limit lim = new Limit(1);
+    
+    Asyncc.<T,E>RunMapLimit(entries, tasks, new HashMap<>(), c, lim, f);
+    
+  }
+  public static <T, E> void ParallelLimit(int limit, Map<String, AsyncTask<T, E>> tasks, AsyncCallback<Map<String, T>, E> f) {
+    
+    Map<String, T> results = new HashMap<>();
+    boolean error = false;
+    Counter c = new Counter();
+    
+    Iterator entries = tasks.entrySet().iterator();
+    Limit lim = new Limit(limit);
+    
+    RunMapLimit(entries, tasks, new HashMap<>(), c, lim, f);
+    
+  }
+  
+  public static <T, E> void Parallel(Map<String, AsyncTask<T, E>> tasks, AsyncCallback<Map<String, T>, E> f) {
+    
+    Map<String, T> results = new HashMap<>();
+    boolean error = false;
+    Counter c = new Counter();
+    
+    for (Map.Entry<String, AsyncTask<T, E>> entry : tasks.entrySet()) {
+      
+      final String key = entry.getKey();
+      
+      entry.getValue().run((e, v) -> {
+        
+        if (e != null) {
+          f.done((E) e, Map.of());
+          return;
+        }
+        
+        c.incrementFinished();
+        results.put(key, v);
+        
+        if (c.getFinishedCount() == tasks.size()) {
+          f.done(null, results);
+        }
+        
+      });
       
     }
-  
+    
   }
   
   public static <T, E> void Parallel(List<AsyncTask> tasks, AsyncCallback<List<T>, E> f) {
@@ -231,7 +270,7 @@ public class Asyncc {
       tasks.get(i).run((e, v) -> {
         
         if (e != null) {
-          f.done((E) e, null);
+          f.done((E) e, Collections.emptyList());
           return;
         }
         
@@ -249,8 +288,6 @@ public class Asyncc {
   }
   
   
-  
-  
   public static <T, E> void ParallelLimit(int limit, List<AsyncTask> tasks, AsyncCallback<List<T>, E> f) {
     
     Limit lim = new Limit(limit);
@@ -259,6 +296,62 @@ public class Asyncc {
     Counter c = new Counter();
     
     RunTasksLimit(tasks, results, c, lim, f);
+    
+  }
+  
+  private static <T, E> void RunMapLimit(
+    Iterator<Map.Entry<String, AsyncTask<T,E>>> entries,
+    Map<String, AsyncTask<T, E>> m,
+    Map<String, T> results,
+    Counter c,
+    Limit lim,
+    AsyncCallback<Map<String, T>, E> f
+  ) {
+    
+    if (c.getStartedCount() >= m.size()) {
+      return;
+    }
+    
+    if (!entries.hasNext()) {
+      return;
+    }
+    
+    Map.Entry<String, AsyncTask<T,E>> entry =  entries.next();
+    String key = entry.getKey();
+    AsyncTask t = m.get(key);
+    lim.increment();
+    c.incrementStarted();
+    
+    t.<T, E>run((e, v) -> {
+      
+      if (e != null) {
+        f.done((E) e, Map.of());
+        return;
+      }
+      
+      results.put(key, (T) v);
+      lim.decrement();
+      c.incrementFinished();
+      
+      if (c.getFinishedCount() == m.size()) {
+        f.done(null, results);
+        return;
+      }
+      
+      if (lim.isBelowCapacity()) {
+        RunMapLimit(entries, m, results, c, lim, f);
+      }
+      
+    });
+    
+    
+    if (c.getStartedCount() >= m.size()) {
+      return;
+    }
+    
+    if (lim.isBelowCapacity()) {
+      RunMapLimit(entries, m, results, c, lim, f);
+    }
     
   }
   
@@ -277,7 +370,7 @@ public class Asyncc {
     t.<T, E>run((e, v) -> {
       
       if (e != null) {
-        f.done((E) e, null);
+        f.done((E) e, Collections.emptyList());
         return;
       }
       
@@ -322,7 +415,7 @@ public class Asyncc {
     t.run((e, v) -> {
       
       if (e != null) {
-        f.done(e, null);
+        f.done(e, Collections.emptyList());
         return;
       }
       

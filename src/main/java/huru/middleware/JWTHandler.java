@@ -14,6 +14,7 @@ public class JWTHandler implements Handler<RoutingContext> {
   
   public void handle(RoutingContext ctx) {
     HttpServerRequest request = ctx.request();
+    ctx.put("foo", "bar");  // add stuff
     log.info("in the jwt middleware");
     System.out.println("DOOOOF");
     System.out.println(ctx.request().method());

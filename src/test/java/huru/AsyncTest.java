@@ -9,29 +9,54 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import io.vertx.ext.unit.Async;
+import static java.util.Arrays.asList;
+
+
 import java.util.Arrays;
 
 @RunWith(VertxUnitRunner.class)
 public class AsyncTest {
   
-
+  
+  @Test
+  public void testMap(TestContext tc) {
+    
+    Async z = tc.async();
+    
+    Asyncc.<Integer, Object, Object>Map(asList(1, 2, 3),
+      
+      (kv, cb) -> {
+      
+        cb.done(null, kv.value + 2);
+      
+      },
+      (e, results) -> {
+      
+        if (e != null) {
+          z.complete();
+        } else {
+          z.complete();
+        }
+        
+      });
+  }
+  
   @Test
   public void testParallel(TestContext tc) {
     
     Async z = tc.async();
-  
-    Asyncc.Parallel(Arrays.asList(
     
+    Asyncc.Parallel(asList(
+      
       v -> {
         v.done(null, null);
       }
-  
-    ), (e, results) -> {
     
-      if(e != null){
+    ), (e, results) -> {
+      
+      if (e != null) {
         z.complete();
-      }
-      else{
+      } else {
         z.complete();
       }
       
@@ -43,65 +68,62 @@ public class AsyncTest {
     
     Async z = tc.async();
     
-    Asyncc.ParallelLimit(4, Arrays.asList(
+    Asyncc.ParallelLimit(4, asList(
       
       v -> {
         v.done(null, null);
       },
-  
+      
       v -> {
         v.done(null, null);
       },
-  
+      
       v -> {
-  
+        
         new Thread(() -> {
-          try{
+          try {
             Thread.sleep(3);
-          }
-          catch(Exception e){
+          } catch (Exception e) {
             System.out.println(e);
           }
           v.done(null, null);
         })
           .start();
       },
-  
-      v -> {
-       new Thread(() -> {
-         try{
-           Thread.sleep(3);
-         }
-         catch(Exception e){
-           System.out.println(e);
-         }
-           v.done(null, null);
-         })
-         .start();
-      },
-  
-      v -> {
-        v.done(null, null);
-      },
-  
-      v -> {
-        v.done(null, null);
-      },
-  
+      
       v -> {
         new Thread(() -> {
-          try{
+          try {
             Thread.sleep(3);
-          }
-          catch(Exception e){
+          } catch (Exception e) {
             System.out.println(e);
           }
-         
           v.done(null, null);
         })
           .start();
       },
-  
+      
+      v -> {
+        v.done(null, null);
+      },
+      
+      v -> {
+        v.done(null, null);
+      },
+      
+      v -> {
+        new Thread(() -> {
+          try {
+            Thread.sleep(3);
+          } catch (Exception e) {
+            System.out.println(e);
+          }
+          
+          v.done(null, null);
+        })
+          .start();
+      },
+      
       v -> {
         v.done(null, null);
       }
@@ -110,10 +132,9 @@ public class AsyncTest {
       
       System.out.println("DDDDDDDAMN");
       
-      if(e != null){
+      if (e != null) {
         z.complete();
-      }
-      else{
+      } else {
         z.complete();
       }
       
@@ -124,32 +145,43 @@ public class AsyncTest {
   public void testSeries(TestContext tc) {
     
     Async z = tc.async();
-  
-    Asyncc.Series(Arrays.asList(
+    
+    Asyncc.Series(asList(
       
       v -> {
         new Thread(() -> {
-          try{
-            Thread.sleep(3000);
-          }
-          catch(Exception e){
+          try {
+            Thread.sleep(500);
+          } catch (Exception e) {
             System.out.println(e);
           }
-    
+          
           v.done(null, null);
         })
           .start();
       },
-      
+  
       v -> {
         new Thread(() -> {
-          try{
-            Thread.sleep(3000);
-          }
-          catch(Exception e){
+          try {
+            Thread.sleep(500);
+          } catch (Exception e) {
             System.out.println(e);
           }
-    
+      
+          v.done(null, null);
+        })
+          .start();
+      },
+  
+      v -> {
+        new Thread(() -> {
+          try {
+            Thread.sleep(500);
+          } catch (Exception e) {
+            System.out.println(e);
+          }
+          
           v.done(null, null);
         })
           .start();
@@ -157,10 +189,9 @@ public class AsyncTest {
     
     ), (e, results) -> {
       
-      if(e != null){
+      if (e != null) {
         z.complete();
-      }
-      else{
+      } else {
         z.complete();
       }
       

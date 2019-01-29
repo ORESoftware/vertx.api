@@ -43,7 +43,7 @@ public class AsyncTest {
     
     Async z = tc.async();
     
-    Asyncc.ParallelLimit(2, Arrays.asList(
+    Asyncc.ParallelLimit(4, Arrays.asList(
       
       v -> {
         v.done(null, null);
@@ -54,14 +54,23 @@ public class AsyncTest {
       },
   
       v -> {
-        
-        v.done(null, null);
+  
+        new Thread(() -> {
+          try{
+            Thread.sleep(3);
+          }
+          catch(Exception e){
+            System.out.println(e);
+          }
+          v.done(null, null);
+        })
+          .start();
       },
   
       v -> {
        new Thread(() -> {
          try{
-           Thread.sleep(5000);
+           Thread.sleep(3);
          }
          catch(Exception e){
            System.out.println(e);
@@ -82,7 +91,7 @@ public class AsyncTest {
       v -> {
         new Thread(() -> {
           try{
-            Thread.sleep(5000);
+            Thread.sleep(3);
           }
           catch(Exception e){
             System.out.println(e);
@@ -119,11 +128,31 @@ public class AsyncTest {
     Asyncc.Series(Arrays.asList(
       
       v -> {
-        v.done(null, null);
+        new Thread(() -> {
+          try{
+            Thread.sleep(3000);
+          }
+          catch(Exception e){
+            System.out.println(e);
+          }
+    
+          v.done(null, null);
+        })
+          .start();
       },
       
       v -> {
-        v.done(null, null);
+        new Thread(() -> {
+          try{
+            Thread.sleep(3000);
+          }
+          catch(Exception e){
+            System.out.println(e);
+          }
+    
+          v.done(null, null);
+        })
+          .start();
       }
     
     ), (e, results) -> {

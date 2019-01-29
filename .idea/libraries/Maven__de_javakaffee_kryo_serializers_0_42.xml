@@ -3,9 +3,7 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/de/javakaffee/kryo-serializers/0.42/kryo-serializers-0.42.jar!/" />
     </CLASSES>
-    <JAVADOC>
-      <root url="jar://$MAVEN_REPOSITORY$/de/javakaffee/kryo-serializers/0.42/kryo-serializers-0.42-javadoc.jar!/" />
-    </JAVADOC>
+    <JAVADOC />
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/de/javakaffee/kryo-serializers/0.42/kryo-serializers-0.42-sources.jar!/" />
     </SOURCES>

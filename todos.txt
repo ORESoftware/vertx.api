@@ -52,3 +52,8 @@ https://stackoverflow.com/questions/54394784/deserialize-request-body-to-specifi
       response.setStatusCode(200);
       response.end();
     });
+
+
+https://www.foreach.be/blog/parallel-and-asynchronous-programming-in-java-8
+
+each one teach one

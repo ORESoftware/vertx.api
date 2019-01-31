@@ -55,6 +55,7 @@ public class AsyncTest {
     Asyncc.Parallel(asList(
       
       v -> {
+        
         v.done(null, null);
       }
     

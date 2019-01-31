@@ -57,3 +57,12 @@ https://stackoverflow.com/questions/54394784/deserialize-request-body-to-specifi
 https://www.foreach.be/blog/parallel-and-asynchronous-programming-in-java-8
 
 each one teach one
+
+private void doSomething() {
+  // Do something and then do something again and again and again...
+  vertx.runOnContext(new Handler<Void>() {
+    public void handle(Void event) {
+      doSomething();
+    }
+  });
+}

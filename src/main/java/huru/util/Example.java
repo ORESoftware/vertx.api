@@ -41,11 +41,11 @@ class Foo {
   }
 }
 
-class AT implements Asyncc.AsyncCallback {
-  
-  @Override
-  public void done(Object e, Object v) {
-  
-  }
-  
-}
+//class AT implements AsyncCallback {
+//
+//  @Override
+//  public void done(Object e, Object v) {
+//
+//  }
+//
+//}

@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/io/reactiverse/reactive-pg-client/0.10.6/reactive-pg-client-0.10.6.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/io/reactiverse/reactive-pg-client/0.10.6/reactive-pg-client-0.10.6-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/io/reactiverse/reactive-pg-client/0.10.6/reactive-pg-client-0.10.6-sources.jar!/" />
     </SOURCES>

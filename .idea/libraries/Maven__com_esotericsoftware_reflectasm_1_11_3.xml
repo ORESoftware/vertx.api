@@ -3,7 +3,9 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/com/esotericsoftware/reflectasm/1.11.3/reflectasm-1.11.3.jar!/" />
     </CLASSES>
-    <JAVADOC />
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/com/esotericsoftware/reflectasm/1.11.3/reflectasm-1.11.3-javadoc.jar!/" />
+    </JAVADOC>
     <SOURCES>
       <root url="jar://$MAVEN_REPOSITORY$/com/esotericsoftware/reflectasm/1.11.3/reflectasm-1.11.3-sources.jar!/" />
     </SOURCES>

@@ -59,6 +59,8 @@ public class MainVerticle extends AbstractVerticle {
 
 //    final Vertx vertx = Vertx.vertx();
     
+    log.info("foo");
+    
     JsonObject config = new JsonObject()
       .put("username", "postgres")
       .put("password", "postgres")
@@ -75,16 +77,31 @@ public class MainVerticle extends AbstractVerticle {
       .handler(BodyHandler.create())
 //      .handler(Sync.fiberHandler(new JWTHandler()));
       .handler(new JWTHandler());
-  
-  
-    new KCUser(client)
-      .mount(router,"/api/user");
     
+    
+    new KCUser(client)
+      .mount(router, "/api/user");
+    
+    
+    router.route("/foo1").handler(h -> {
+      
+      throw new RuntimeException("shit1");
+//      h.response().write("damn");
+    });
+    
+    
+    router.route("/foo2").handler(h -> {
+      
+      vertx.runOnContext(v -> {
+        throw new RuntimeException("shit2");
+      });
+    });
+
 //    router.route("/api/user").handler(new KCUser(client));
     router.route("/api/class").handler(new KCClass(client));
     
     router.route().failureHandler(ctx -> {
-       ctx.response().end("We failed here!");
+      ctx.response().end("We failed here!");
     });
     
     router.route().last().handler(ctx -> {

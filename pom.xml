@@ -121,6 +121,12 @@
     </dependency>
 
     <dependency>
+      <groupId>com.oresoftware</groupId>
+      <artifactId>async.0.1</artifactId>
+      <version>0.1.101</version>
+    </dependency>
+
+    <dependency>
       <groupId>io.vertx</groupId>
       <artifactId>vertx-unit</artifactId>
       <scope>test</scope>

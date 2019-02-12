@@ -28,6 +28,15 @@ class Helper implements IModelHelper<UserModel> {
   
 }
 
+@interface NotNull {
+  boolean value() default false;
+}
+
+@interface Type {
+  Class<?> value();
+}
+
+
 public class UserModel extends BaseModel {
   
   static Helper helper = new Helper();
@@ -35,11 +44,17 @@ public class UserModel extends BaseModel {
   private static Map<String, String> getDBToRuntimeMap = null;
   private static Map<String, String> getRuntimeToDBMap = null;
   
-  enum KeyMap implements IMapEnum {
-    
+  public enum KeyMap implements IMapEnum {
+  
+    @Type(Integer.class)
+    @NotNull
     USER_ID("user_id", "userId"),
+    
+    @NotNull
     USER_HANDLE("user_handle", "userHandle"),
-    EMAIL("user_email", "userEmail");
+    
+    @NotNull
+    USER_EMAIL("user_email", "userEmail");
     
     private String key;
     private String value;
@@ -47,6 +62,7 @@ public class UserModel extends BaseModel {
     KeyMap(String k, String v) {
       this.key = k;
       this.value = v;
+      
     }
     
     @Override

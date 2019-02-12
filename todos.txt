@@ -72,3 +72,6 @@ dynamic class re-loading
 https://www.toptal.com/java/java-wizardry-101-a-guide-to-java-class-reloading
 
 https://dzone.com/articles/reloading-java-classes-401
+
+
+https://stackoverflow.com/questions/54647845/retrieve-value-of-annotation-for-an-enum

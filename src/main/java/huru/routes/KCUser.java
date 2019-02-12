@@ -1,5 +1,6 @@
 package huru.routes;
 
+import huru.middleware.JWTHandler;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
@@ -10,12 +11,19 @@ import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.sql.SQLRowStream;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import org.apache.log4j.Logger;
+import org.jooq.tools.json.JSONObject;
+
+import static huru.routes.RouteHelper.getSQLConnection;
+import static huru.routes.RouteHelper.handleSQLResponse;
 
 import java.util.HashMap;
 import java.util.Map;
 
+
 public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   
+  private static final Logger log = Logger.getLogger(JWTHandler.class);
   private SQLClient client;
   private Map<String, JsonObject> products = new HashMap<>();
   
@@ -24,30 +32,54 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
     this.client = client;
   }
   
+  public static interface Foo<T> {
+    void moo(T a);
+  }
+  
+  public static class Bar {
+    
+    void z(Foo<String> f) {
+    
+    }
+    
+    void h() {
+      this.z(v -> {
+      
+      });
+    }
+  }
+  
+  
   @Override
   public void handle(RoutingContext ctx) {
     RouteHelper.BasicHandler(ctx, this);
   }
   
-  public void mount(Router r, String routeBase){
+  public void mount(Router r, String routeBase) {
     r.route(routeBase).handler(this);
     r.get(routeBase.concat("/:id")).handler(this::getById);
     r.put(routeBase.concat("/:id")).handler(this::putById);
-  
+    
   }
   
   public void putById(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, conn -> {
       
-      ctx.response().end("boondocks 222");
+      conn.query("select", res -> {
+        
+        JsonObject o = res.result().toJson();
+        
+        ctx.response().end("boondocks 222");
+      });
+      
       
     });
   }
   
   public void getById(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, r -> {
       
       ctx.response().end("boondocks 222");
       
@@ -56,17 +88,17 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   
   public void basicGet(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, r -> {
       
       ctx.response().end("boondocks");
-    
+      
     });
   }
   
   
   public void basicPost(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, r -> {
       
       ctx.response().end("boondocks");
       
@@ -75,7 +107,7 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   
   public void basicDelete(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, r -> {
       
       ctx.response().end("boondocks");
       
@@ -84,7 +116,7 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   
   public void basicHead(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, r -> {
       
       ctx.response().end("boondocks");
       
@@ -93,7 +125,7 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   
   public void basicPut(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, r -> {
       
       ctx.response().end("boondocks");
       
@@ -102,13 +134,13 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   
   private void handleGetProduct(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, res -> {
+    getSQLConnection(this.client, ctx, conn -> {
       
-      SQLConnection conn = res.result();
-      
-      conn.queryStream("SELECT * FROM large_table; SELECT * FROM other_table", stream -> {
-        if (stream.succeeded()) {
-          SQLRowStream sqlRowStream = stream.result();
+      conn.queryStream(
+        "SELECT * FROM large_table; SELECT * FROM other_table",
+        handleSQLResponse(ctx, s -> {
+          
+          SQLRowStream sqlRowStream = s.result();
           
           sqlRowStream
             .resultSetClosedHandler(v -> {
@@ -122,16 +154,15 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
               // no more data available...
               ctx.response().end();
             });
-        }
-      });
+          
+        }));
     });
   }
   
   private void handleAddProduct(RoutingContext ctx) {
     
-    RouteHelper.getSQLConnection(this.client, ctx, res -> {
+    getSQLConnection(this.client, ctx, conn -> {
       
-      SQLConnection conn = res.result();
       String v = "";
       
       conn.query("SELECT * FROM account", results -> {

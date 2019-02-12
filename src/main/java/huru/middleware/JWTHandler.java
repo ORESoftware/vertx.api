@@ -10,7 +10,7 @@ import org.apache.log4j.Logger;
 
 public class JWTHandler implements Handler<RoutingContext> {
   
-  private final Logger log = Logger.getLogger(MainVerticle.class);
+  private static final Logger log = Logger.getLogger(JWTHandler.class);
   
   public void handle(RoutingContext ctx) {
     HttpServerRequest request = ctx.request();

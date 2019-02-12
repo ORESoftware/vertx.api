@@ -1,12 +1,17 @@
 package huru.routes;
 
+import huru.middleware.JWTHandler;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.ext.sql.SQLClient;
 import io.vertx.ext.sql.SQLConnection;
+import io.vertx.ext.sql.SQLRowStream;
 import io.vertx.ext.web.RoutingContext;
+import org.apache.log4j.Logger;
 
 public class RouteHelper {
+  
+  private static final Logger log = Logger.getLogger(JWTHandler.class);
   
   static void BasicHandler(RoutingContext ctx, IBasicHandler h) {
     switch (ctx.request().method()) {
@@ -21,18 +26,35 @@ public class RouteHelper {
     }
   }
   
-  static void getSQLConnection(SQLClient client, RoutingContext ctx, Handler<AsyncResult<SQLConnection>> v) {
+  static <T> Handler<AsyncResult<T>> handleSQLResponse(RoutingContext ctx, Handler<AsyncResult<T>> h){
+    
+    return res -> {
+      
+      if(res.failed()){
+        ctx.response().setStatusCode(500);
+        ctx.response().headers().add("foo","bar");
+        ctx.fail(res.cause());
+        return;
+      }
+  
+      h.handle(res);
+    };
+  }
+  
+
+  
+  static void getSQLConnection(SQLClient client, RoutingContext ctx, Handler<SQLConnection> v) {
     
     client.getConnection(res -> {
       
       if (!res.succeeded()) {
-        System.out.println("Here comes the cause:");
-        System.out.println(res.cause());
+        log.error("Here comes the cause:");
+        log.error(res.cause());
         ctx.fail(res.cause());
         return;
       }
       
-      v.handle(res);
+      v.handle(res.result());
       
     });
   }

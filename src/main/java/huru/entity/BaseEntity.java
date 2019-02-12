@@ -9,6 +9,7 @@ public class BaseEntity <T extends BaseModel> extends JsonObject {
   
   public BaseEntity(Class<T> m){
     this.model = m;
+    var b = new BaseEntity<KCClassModel>(KCClassModel.class);
   }
   
   public void setUpdateInfo(String user){
@@ -20,6 +21,9 @@ public class BaseEntity <T extends BaseModel> extends JsonObject {
     return JsonObject.mapFrom(this.model);
   }
   
+  public T toObject(JsonObject v){
+    return v.mapTo(this.model);
+  }
   
   public Class<T> getEntityType (){
     return this.model;

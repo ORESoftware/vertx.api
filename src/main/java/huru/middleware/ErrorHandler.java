@@ -18,7 +18,8 @@ public class ErrorHandler implements Handler<RoutingContext> {
       ctx.next();
     }
     catch(Exception err){
-      ctx.response().end("We messed up.");
+      err.printStackTrace(System.err);
+      ctx.response().end("We messed up: " + err.getMessage());
     }
   }
 }

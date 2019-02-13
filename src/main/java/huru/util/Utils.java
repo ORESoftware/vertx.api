@@ -7,19 +7,47 @@ import java.util.Map;
 public class Utils {
   
   
-  static String join(String ...v){
+  public static String join(String ...values){
     
     StringBuilder b = new StringBuilder();
-    
-    for(String s: v){
+  
+    int i = 0, len = values.length;
+    for(String s: values){
       b.append(s);
+      if(++i < len){
+        b.append(" ");
+      }
     }
     
     return b.toString();
   }
   
+  public static class Sep {
+    public String value;
+    public Sep(String v){
+      this.value = v;
+    }
+  }
   
-  static <T> Map<String,T> renameKeys(Map<String,T> input, Map<String,String> mapper){
+  
+  public String join(Sep sep, String... values){
+    
+    StringBuilder b = new StringBuilder();
+    
+    int i = 0, len = values.length;
+    for(String s: values){
+      b.append(s);
+      if(++i < len){
+        b.append(sep);
+      }
+    }
+    
+    return b.toString();
+    
+  }
+  
+  
+  public static <T> Map<String,T> renameKeys(Map<String,T> input, Map<String,String> mapper){
     
     HashMap<String,T> ret = new HashMap<>();
     Iterator it = input.entrySet().iterator();

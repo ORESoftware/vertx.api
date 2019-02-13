@@ -1,5 +1,6 @@
 package huru.entity;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 
 public class InterfaceContainer {
@@ -7,6 +8,7 @@ public class InterfaceContainer {
   public interface IMapEnum {
     String getKey();
     String getValue();
+    boolean hasAnnotation(Annotation a);
 //    Map<String,String> getDBToRuntimeMap();
 //    Map<String,String> getRuntimeToDBMap();
   

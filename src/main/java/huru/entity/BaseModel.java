@@ -2,7 +2,8 @@ package huru.entity;
 
 import java.util.Date;
 
-abstract class BaseModel {
+
+public abstract class BaseModel {
   
   private String createdBy;
   private Date createdAt;
@@ -44,5 +45,11 @@ abstract class BaseModel {
     this.updatedBy = updatedBy;
   }
   
+  public BaseModel call(){
+    AnnotationInjector.inject(this);
+    return this;
+  }
+  
+  abstract public String getTableName();
   
 }

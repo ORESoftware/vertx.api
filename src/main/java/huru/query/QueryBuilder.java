@@ -1,8 +1,7 @@
 package huru.query;
 
-import org.jooq.*;
-import org.jooq.conf.ParamType;
-import org.jooq.exception.*;
+
+import huru.entity.BaseModel;
 
 import java.sql.ResultSet;
 import java.util.*;
@@ -14,11 +13,20 @@ import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
-public class QueryBuilder {
+public class QueryBuilder<T extends BaseModel> {
   
+  private T model;
   
-  public <T> SelectQuery createSelectQuery(){
-    return null;
+  public QueryBuilder(T model){
+    this.model = model;
+  }
+  
+  public Select<T> select(){
+    return new Select<T>(this.model);
+  }
+  
+  public Delete<T> delete(){
+    return new Delete<T>(this.model);
   }
   
 }

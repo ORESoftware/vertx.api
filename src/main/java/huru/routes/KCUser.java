@@ -1,6 +1,10 @@
 package huru.routes;
 
+import huru.entity.Model;
+import huru.entity.Models;
+import huru.entity.UserModel;
 import huru.middleware.JWTHandler;
+import huru.query.QueryBuilder;
 import io.vertx.core.Handler;
 import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
@@ -17,7 +21,9 @@ import org.jooq.tools.json.JSONObject;
 import static huru.routes.RouteHelper.getSQLConnection;
 import static huru.routes.RouteHelper.handleSQLResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -26,27 +32,12 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   private static final Logger log = Logger.getLogger(JWTHandler.class);
   private SQLClient client;
   private Map<String, JsonObject> products = new HashMap<>();
+  private Models.User User = Model.User;
+  private final QueryBuilder<Models.User> qb = new QueryBuilder<>(User);
   
   public KCUser(SQLClient client) {
     super();
     this.client = client;
-  }
-  
-  public static interface Foo<T> {
-    void moo(T a);
-  }
-  
-  public static class Bar {
-    
-    void z(Foo<String> f) {
-    
-    }
-    
-    void h() {
-      this.z(v -> {
-      
-      });
-    }
   }
   
   
@@ -66,9 +57,16 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
     
     getSQLConnection(this.client, ctx, conn -> {
       
-      conn.query("select", res -> {
+      conn.query("select * from bagel", res -> {
         
-        JsonObject o = res.result().toJson();
+        List<JsonObject> o = res.result().getRows();
+
+
+//        JsonArray v = res.result().toJson().getJsonArray("3");
+
+//        UserModel.Model v = res.result().toJson().mapTo(UserModel.Model.class);
+        
+        Map<String, Object> v = res.result().getNext().toJson().getMap();
         
         ctx.response().end("boondocks 222");
       });
@@ -88,9 +86,20 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   
   public void basicGet(RoutingContext ctx) {
     
-    getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, conn -> {
       
-      ctx.response().end("boondocks");
+      var sql = qb.select()
+        .all()
+        .from(User.getTableName())
+        .getSQL();
+      
+      
+      conn.query(sql, handleSQLResponse(ctx, r -> {
+        ctx.response().end(r.result().toJson().toString());
+      }));
+      
+      
+      
       
     });
   }
@@ -165,17 +174,13 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
       
       String v = "";
       
-      conn.query("SELECT * FROM account", results -> {
+      conn.query("SELECT * FROM account", handleSQLResponse(ctx, r -> {
         
-        if (!results.succeeded()) {
-          throw new Error("Could not connect to table.");
-        }
-        
-        ResultSet rs = results.result();
+        ResultSet rs = r.result();
         System.out.println("Connected and got results");
         System.out.println(rs.toString());
         
-      });
+      }));
       
     });
   }

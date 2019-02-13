@@ -1,12 +1,18 @@
 package huru.entity;
 
+
 import io.vertx.core.json.JsonObject;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.reflect.Field;
+import java.util.*;
 
 import static huru.entity.InterfaceContainer.IModelHelper;
 import static huru.entity.InterfaceContainer.IMapEnum;
+
+import static huru.entity.Annotations.*;
 
 class Helper implements IModelHelper<UserModel> {
   
@@ -28,13 +34,6 @@ class Helper implements IModelHelper<UserModel> {
   
 }
 
-@interface NotNull {
-  boolean value() default false;
-}
-
-@interface Type {
-  Class<?> value();
-}
 
 
 public class UserModel extends BaseModel {
@@ -44,39 +43,10 @@ public class UserModel extends BaseModel {
   private static Map<String, String> getDBToRuntimeMap = null;
   private static Map<String, String> getRuntimeToDBMap = null;
   
-  public enum KeyMap implements IMapEnum {
+  public static class Model extends HashMap<String,Object> {
   
-    @Type(Integer.class)
-    @NotNull
-    USER_ID("user_id", "userId"),
-    
-    @NotNull
-    USER_HANDLE("user_handle", "userHandle"),
-    
-    @NotNull
-    USER_EMAIL("user_email", "userEmail");
-    
-    private String key;
-    private String value;
-    
-    KeyMap(String k, String v) {
-      this.key = k;
-      this.value = v;
-      
-    }
-    
-    @Override
-    public String getKey() {
-      return this.key;
-    }
-    
-    @Override
-    public String getValue() {
-      return this.value;
-    }
-    
-    
   }
+
   
   
   public Map<String, String> getDBToRuntimeMap() {
@@ -87,9 +57,9 @@ public class UserModel extends BaseModel {
     
     var ret = new HashMap<String, String>();
     
-    for (KeyMap k : KeyMap.values()) {
-      ret.put(k.key, k.value);
-    }
+//    for (KeyMap k : KeyMap.values()) {
+//      ret.put(k.key, k.value);
+//    }
     
     return getDBToRuntimeMap = ret;
   }
@@ -103,9 +73,9 @@ public class UserModel extends BaseModel {
   
     var ret = new HashMap<String, String>();
   
-    for (KeyMap k : KeyMap.values()) {
-      ret.put(k.value, k.key);
-    }
+//    for (KeyMap k : KeyMap.values()) {
+//      ret.put(k.value, k.key);
+//    }
   
     return getRuntimeToDBMap = ret;
   }

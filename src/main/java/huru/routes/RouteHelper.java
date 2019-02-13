@@ -26,22 +26,26 @@ public class RouteHelper {
     }
   }
   
-  static <T> Handler<AsyncResult<T>> handleSQLResponse(RoutingContext ctx, Handler<AsyncResult<T>> h){
+  static <T> Handler<AsyncResult<T>> handleSQLResponse(RoutingContext ctx, Handler<AsyncResult<T>> h) {
     
     return res -> {
       
-      if(res.failed()){
+      if (res.failed()) {
         ctx.response().setStatusCode(500);
-        ctx.response().headers().add("foo","bar");
+        ctx.response().headers().add("foo", "bar");
         ctx.fail(res.cause());
         return;
       }
-  
-      h.handle(res);
+      
+      try {
+        h.handle(res);
+      } catch (Exception e) {
+        ctx.fail(e);
+      }
+      
     };
   }
   
-
   
   static void getSQLConnection(SQLClient client, RoutingContext ctx, Handler<SQLConnection> v) {
     
@@ -54,7 +58,11 @@ public class RouteHelper {
         return;
       }
       
-      v.handle(res.result());
+      try {
+        v.handle(res.result());
+      } catch (Exception e) {
+        ctx.fail(e);
+      }
       
     });
   }

@@ -1,11 +1,23 @@
 package huru.query;
 
-public class From {
+import huru.entity.Table;
 
-  String simple;
+public class From implements Base.IGetSQL {
+
+//  String simple;
   
-  public From(String simple){
-    this.simple = simple;
+  Table table;
+  
+//  public From(String simple){
+//    this.simple = simple;
+//  }
+  
+  public From(Table t){
+    this.table = t;
   }
-
+  
+  @Override
+  public String getSQL() {
+    return String.join(" ",this.table.getName(), this.table.getAlias());
+  }
 }

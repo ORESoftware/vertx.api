@@ -1,8 +1,6 @@
 package huru.routes;
 
-import huru.entity.Model;
-import huru.entity.Models;
-import huru.entity.UserModel;
+import huru.entity.*;
 import huru.middleware.JWTHandler;
 import huru.query.QueryBuilder;
 import io.vertx.core.Handler;
@@ -77,10 +75,21 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   
   public void getById(RoutingContext ctx) {
     
-    getSQLConnection(this.client, ctx, r -> {
+    getSQLConnection(this.client, ctx, conn -> {
       
-      ctx.response().end("boondocks 222");
-      
+      var id = ctx.request().getParam("id");
+  
+      var sql = qb.select()
+        .fields(User.USER_EMAIL, User.USER_EMAIL.as("foo"))
+        .from(Tables.UserTable)
+        .getSQL();
+  
+  
+      conn.query(sql, handleSQLResponse(ctx, r -> {
+        ctx.response().end(r.result().toJson().toString());
+      }));
+  
+  
     });
   }
   
@@ -90,7 +99,7 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
       
       var sql = qb.select()
         .all()
-        .from(User.getTableName())
+        .from(Tables.UserTable)
         .getSQL();
       
       

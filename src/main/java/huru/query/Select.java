@@ -1,6 +1,7 @@
 package huru.query;
 
 import huru.entity.BaseModel;
+import huru.entity.Table;
 import huru.entity.TableField;
 import huru.util.Utils;
 
@@ -36,10 +37,15 @@ public class Select<T extends BaseModel> implements IGetSQL {
     return this;
   }
   
+  public Select<T> fields(List<String> s) {
+    this.fields.addAll(s);
+    return this;
+  }
+  
   public Select<T> fields(TableField... s) {
     Collection<String> fields = Arrays.asList(s)
       .stream()
-      .map(v -> v.getDbName())
+      .map(v -> (v.hasAlias() ? v.getAsRename() : v.getDbName()))
       .collect(Collectors.toList());
     
     this.fields.addAll(fields);
@@ -51,7 +57,7 @@ public class Select<T extends BaseModel> implements IGetSQL {
     return this;
   }
   
-  public Select<T> from(String t) {
+  public Select<T> from(Table t) {
     this.from = new From(t);
     return this;
   }
@@ -84,7 +90,7 @@ public class Select<T extends BaseModel> implements IGetSQL {
         }
         
         b.append(
-          Utils.join("SELECT", String.join(",", this.fields))
+          Utils.join("SELECT", String.join(", ", this.fields))
         );
       }
       
@@ -92,7 +98,7 @@ public class Select<T extends BaseModel> implements IGetSQL {
       b.append("\n");
       
       b.append(
-        Utils.join("FROM", this.from.simple)
+        Utils.join("FROM", this.from.getSQL())
       );
       
       b.append("\n");

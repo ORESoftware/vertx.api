@@ -75,3 +75,9 @@ https://dzone.com/articles/reloading-java-classes-401
 
 
 https://stackoverflow.com/questions/54647845/retrieve-value-of-annotation-for-an-enum
+
+https://stackoverflow.com/questions/7507121/efficient-way-to-handle-resultset-in-java/7507225#7507225
+
+https://stackoverflow.com/questions/54660577/install-eclipse-incremental-java-compiler-on-ubuntu-without-installing-eclipse
+
+java -jar ecj.jar -classpath rt.jar A.java

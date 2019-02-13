@@ -11,8 +11,18 @@ public class Annotations {
   }
   
   @Retention(RetentionPolicy.RUNTIME)
-  public @interface Type {
+  public @interface ColumnType {
     Class<?> value();
+  }
+  
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface RuntimeType {
+    Class<?> value();
+  }
+  
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface SetTable {
+    String table();
   }
   
 }

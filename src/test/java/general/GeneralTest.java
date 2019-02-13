@@ -17,19 +17,19 @@ import java.util.Map;
 
 class Foo {
   
-   public String loaf = "";
+  public String loaf = "";
   public Boolean bool;
-  
+
 //  static boolean dog(){
 //    return true;
 //  }
   
-  public String toString(){
+  public String toString() {
     return JsonObject.mapFrom(this).toString();
   }
 }
 
-class Model extends HashMap<String,Object> {
+class Model extends HashMap<String, Object> {
 //  public boolean loaf;
 //  public String bool;
 
@@ -45,7 +45,7 @@ public class GeneralTest {
     JsonObject v = new JsonObject();
     v.put("loaf", true);
     v.put("bool", "false");
-    
+
 //    v.put("bool", "false");
     
     var k = v.getMap();
@@ -54,13 +54,11 @@ public class GeneralTest {
   }
   
   @Test
-  public void JSON(){
- 
-  
+  public void JSON() {
   
   
   }
-  
+
 //  @Test
 //  public void jooq(){
 //

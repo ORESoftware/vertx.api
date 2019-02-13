@@ -43,10 +43,14 @@ public class UserModel extends BaseModel {
   private static Map<String, String> getDBToRuntimeMap = null;
   private static Map<String, String> getRuntimeToDBMap = null;
   
+  @Override
+  public String getTableName() {
+    return null;
+  }
+  
   public static class Model extends HashMap<String,Object> {
   
   }
-
   
   
   public Map<String, String> getDBToRuntimeMap() {

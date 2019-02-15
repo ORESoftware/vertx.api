@@ -150,25 +150,26 @@
 
     <plugins>
 
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-dependencies</id>
-            <phase>package</phase>
-            <goals>
-              <goal>copy-dependencies</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>/home/oleg/codes/oresoftware/vertx.api/huru_deps</outputDirectory>
-              <!--<outputDirectory>${project.build.directory}</outputDirectory>-->
-              <overWriteReleases>true</overWriteReleases>
-              <overWriteSnapshots>true</overWriteSnapshots>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
+      <!--<plugin>-->
+        <!--<groupId>org.apache.maven.plugins</groupId>-->
+        <!--<artifactId>maven-dependency-plugin</artifactId>-->
+        <!--<executions>-->
+          <!--<execution>-->
+            <!--<id>copy-dependencies</id>-->
+            <!--&lt;!&ndash;<phase>package</phase>&ndash;&gt;-->
+            <!--<phase>none</phase>-->
+            <!--<goals>-->
+              <!--<goal>copy-dependencies</goal>-->
+            <!--</goals>-->
+            <!--<configuration>-->
+              <!--<outputDirectory>/home/oleg/codes/oresoftware/vertx.api/huru_deps</outputDirectory>-->
+              <!--&lt;!&ndash;<outputDirectory>${project.build.directory}</outputDirectory>&ndash;&gt;-->
+              <!--<overWriteReleases>true</overWriteReleases>-->
+              <!--<overWriteSnapshots>true</overWriteSnapshots>-->
+            <!--</configuration>-->
+          <!--</execution>-->
+        <!--</executions>-->
+      <!--</plugin>-->
 
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
@@ -182,8 +183,9 @@
 
         <executions>
           <execution>
-            <id>make-assembly</id> <!-- this is used for inheritance merges -->
-            <phase>package</phase> <!-- bind to the packaging phase -->
+            <id>make-assembly</id>
+            <!--<phase>package</phase> -->
+            <phase>none</phase>
             <goals>
               <goal>single</goal>
             </goals>

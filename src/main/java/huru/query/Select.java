@@ -2,7 +2,7 @@ package huru.query;
 
 import huru.entity.BaseModel;
 import huru.entity.Table;
-import huru.entity.TableField;
+import huru.entity.TableMap;
 import huru.util.Utils;
 
 import static huru.query.Base.*;
@@ -10,10 +10,10 @@ import static huru.query.Base.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Select<T extends BaseModel> implements IGetSQL {
+public class Select<T extends BaseModel> implements IGetSQL, Cloneable {
   
   private T model;
-  private HashSet<String> fields = new HashSet<>();
+  private HashSet<TableField> fields = new HashSet<>();
   private Where where;
   private From from;
   private boolean selectAll = false;
@@ -22,33 +22,32 @@ public class Select<T extends BaseModel> implements IGetSQL {
     this.model = model;
   }
   
-  public Select(T model, String... s) {
-    this.model = model;
-    this.fields(s);
-  }
+//  public Select(T model, String... s) {
+//    this.model = model;
+//    this.fields(s);
+//  }
   
   public Select(T model, TableField... s) {
     this.model = model;
     this.fields(s);
   }
   
-  public Select<T> fields(String... s) {
-    this.fields.addAll(Arrays.asList(s));
+  public Select<T> clone(){
     return this;
   }
   
-  public Select<T> fields(List<String> s) {
-    this.fields.addAll(s);
-    return this;
-  }
+//  public Select<T> fields(String... s) {
+//    this.fields.addAll(Arrays.asList(s));
+//    return this.clone();
+//  }
+  
+//  public Select<T> fields(List<String> s) {
+//    this.fields.addAll(s);
+//    return this;
+//  }
   
   public Select<T> fields(TableField... s) {
-    Collection<String> fields = Arrays.asList(s)
-      .stream()
-      .map(v -> (v.hasAlias() ? v.getAsRename() : v.getDbName()))
-      .collect(Collectors.toList());
-    
-    this.fields.addAll(fields);
+    this.fields.addAll(Arrays.asList(s));
     return this;
   }
   
@@ -88,9 +87,28 @@ public class Select<T extends BaseModel> implements IGetSQL {
         if (this.fields.isEmpty()) {
           throw new Exception("No fields selected for select query.");
         }
+  
+        Collection<String> fields = this.fields.stream()
+          .map(v -> {
+            
+            var tableName = v.getTableName();
+            System.out.println("the table name xxx:");
+            System.out.println(tableName);
+            Table table = TableMap.TableMap.get(tableName);
+            System.out.println("the table map:");
+            System.out.println(TableMap.TableMap);
+            String a = table.alias;
+            
+            if(v.hasAlias()){
+              return String.join("", a,".",v.getDbName()," ","as"," ",v.getAlias());
+            }
+            
+            return String.join("", a, ".", v.getDbName());
+          })
+          .collect(Collectors.toList());
         
         b.append(
-          Utils.join("SELECT", String.join(", ", this.fields))
+          Utils.join("SELECT", String.join(", ", fields))
         );
       }
       

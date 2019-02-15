@@ -21,6 +21,10 @@ public class QueryBuilder<T extends BaseModel> {
     this.model = model;
   }
   
+  public T getModel(){
+    return this.model;
+  }
+  
   public Select<T> select(){
     return new Select<T>(this.model);
   }

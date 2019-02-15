@@ -1,6 +1,12 @@
 package huru;
 
+import huru.entity.Annotations;
+import huru.entity.BaseModel;
+import huru.entity.Models;
+import huru.entity.UserModel;
 import huru.middleware.JWTHandler;
+import huru.query.Bootstrapper;
+import huru.query.QueryBuilder;
 import huru.routes.KCClass;
 import huru.routes.KCUser;
 import io.vertx.core.AbstractVerticle;
@@ -22,6 +28,10 @@ import io.vertx.ext.web.RoutingContext;
 import org.apache.log4j.Logger;
 import io.vertx.core.Future;
 import io.vertx.ext.web.handler.BodyHandler;
+
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.List;
 
 
 public class MainVerticle extends AbstractVerticle {
@@ -58,6 +68,16 @@ public class MainVerticle extends AbstractVerticle {
 //    SQLClient client = JDBCClient.createShared(vertx, config);
 
 //    final Vertx vertx = Vertx.vertx();
+  
+    List<Class<? extends BaseModel>> annots = Arrays.asList(
+      Models.User.class,
+      Models.Klass.class
+    );
+    
+    for(Class<? extends BaseModel> b: annots){
+      QueryBuilder<?> qb = Bootstrapper.bootstrap(b);
+    }
+    
     
     log.info("foo");
     

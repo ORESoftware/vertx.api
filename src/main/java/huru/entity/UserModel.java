@@ -58,8 +58,8 @@ public class UserModel extends BaseModel {
     if (getDBToRuntimeMap != null) {
       return getDBToRuntimeMap;
     }
-    
-    var ret = new HashMap<String, String>();
+  
+    HashMap ret = new HashMap<String, String>();
     
 //    for (KeyMap k : KeyMap.values()) {
 //      ret.put(k.key, k.value);
@@ -75,7 +75,7 @@ public class UserModel extends BaseModel {
       return getRuntimeToDBMap;
     }
   
-    var ret = new HashMap<String, String>();
+    HashMap ret = new HashMap<String, String>();
   
 //    for (KeyMap k : KeyMap.values()) {
 //      ret.put(k.value, k.key);

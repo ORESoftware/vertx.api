@@ -5,6 +5,10 @@ import java.util.Map;
 
 public class InterfaceContainer {
   
+  public interface IValue{
+    public Object value();
+  }
+  
   public interface IMapEnum {
     String getKey();
     String getValue();

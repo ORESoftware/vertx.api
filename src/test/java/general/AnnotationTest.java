@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 
 @Retention(RetentionPolicy.RUNTIME)
@@ -30,6 +31,31 @@ class Bar {
 }
 
 class AnnotationInjector1 {
+  
+  static <T> void inspect(Class<T> klazz) {
+    
+//    AnnotationInjector1.class.getDeclaredField("foo");
+    
+    Field[] fields = klazz.getDeclaredFields();
+    System.out.printf("%d fields:%n", fields.length);
+    for (Field field : fields) {
+      
+      Class<?> c = field.getType();
+      
+//      field.get(klazz);
+      
+      if(Modifier.isStatic(field.getModifiers())){
+      
+      }
+      
+      System.out.printf("%s %s %s%n",
+        Modifier.toString(field.getModifiers()),
+        field.getType().getSimpleName(),
+        field.getName()
+      );
+    }
+  }
+  
   public static void inject(Object instance) {
     Field[] fields = instance.getClass().getDeclaredFields();
     
@@ -64,7 +90,7 @@ public class AnnotationTest {
   @Test
   public void JSON() {
   
-    var b = new Bar();
+    Bar b = new Bar();
     AnnotationInjector1.inject(b);
     System.out.println(b.toString());
   }

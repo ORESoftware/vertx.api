@@ -3,23 +3,20 @@ package huru.routes;
 import huru.entity.*;
 import huru.middleware.JWTHandler;
 import huru.query.QueryBuilder;
+import huru.query.Select;
 import io.vertx.core.Handler;
-import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.sql.ResultSet;
 import io.vertx.ext.sql.SQLClient;
-import io.vertx.ext.sql.SQLConnection;
 import io.vertx.ext.sql.SQLRowStream;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.log4j.Logger;
-import org.jooq.tools.json.JSONObject;
 
 import static huru.routes.RouteHelper.getSQLConnection;
 import static huru.routes.RouteHelper.handleSQLResponse;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +55,7 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
       conn.query("select * from bagel", res -> {
         
         List<JsonObject> o = res.result().getRows();
-
+//        JsonArray v = res.result().getRows();
 
 //        JsonArray v = res.result().toJson().getJsonArray("3");
 
@@ -77,19 +74,19 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
     
     getSQLConnection(this.client, ctx, conn -> {
       
-      var id = ctx.request().getParam("id");
-  
-      var sql = qb.select()
-        .fields(User.USER_EMAIL, User.USER_EMAIL.as("foo"))
+      String id = ctx.request().getParam("id");
+      
+      String sql = qb.select()
+        .fields(User.EMAIL, User.ID.as("foo"))
         .from(Tables.UserTable)
         .getSQL();
-  
-  
+      
+      
       conn.query(sql, handleSQLResponse(ctx, r -> {
         ctx.response().end(r.result().toJson().toString());
       }));
-  
-  
+      
+      
     });
   }
   
@@ -97,7 +94,7 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
     
     getSQLConnection(this.client, ctx, conn -> {
       
-      var sql = qb.select()
+      String sql = qb.select()
         .all()
         .from(Tables.UserTable)
         .getSQL();
@@ -106,8 +103,6 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
       conn.query(sql, handleSQLResponse(ctx, r -> {
         ctx.response().end(r.result().toJson().toString());
       }));
-      
-      
       
       
     });

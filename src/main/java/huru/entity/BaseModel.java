@@ -10,6 +10,10 @@ public abstract class BaseModel {
   private Date updatedAt;
   private String updatedBy;
   
+  public BaseModel(){
+  
+  }
+  
   public Date getCreatedAt() {
     return createdAt;
   }

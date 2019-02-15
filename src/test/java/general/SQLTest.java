@@ -3,6 +3,7 @@ package general;
 import huru.entity.*;
 import huru.entity.Model;
 import huru.query.Bootstrapper;
+import huru.query.Condition;
 import huru.query.QueryBuilder;
 import org.junit.Test;
 
@@ -37,12 +38,12 @@ public class SQLTest {
     
     
     var sql = qb.select()
-   
+      
       .fields(user.EMAIL, user.HANDLE.as("foo"))
       .from(Tables.UserTable)
-      .where()
+      .where(Condition.AND(user.EMAIL.eq("alex@gmail.com"), Condition.OR(user.HANDLE.gt(5), user.ID.eq("my id"),user.ID.neq("my id"))))
 //      .from(new Table("randy"))
-      .getSQL();
+        .getSQL();
     
     
     synchronized (this) {

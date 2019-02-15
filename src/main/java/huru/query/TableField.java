@@ -4,6 +4,7 @@ import huru.entity.TableMap;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
+import huru.query.ComparisonOperators.*;
 
 
 public class TableField {
@@ -111,4 +112,30 @@ public class TableField {
   public String toString() {
     return String.join(",", this.dbName, this.runtimeName, this.tableName,this.annotationMap.toString());
   }
+  
+  
+  public Condition<EqualTo> eq(Object o){
+    return new Condition<>(this, o, new EqualTo());
+  }
+  
+  public Condition<NotEqualTo> neq(Object o){
+    return new Condition<>(this, o, new NotEqualTo());
+  }
+  
+  public Condition<GreaterThan> gt(Object o){
+    return new Condition<>(this, o, new GreaterThan());
+  }
+  
+  public Condition<LessThan> lt(Object o){
+    return new Condition<>(this, o, new LessThan());
+  }
+  
+  public Condition<LessThanOrEqual> lte(Object o){
+    return new Condition<>(this, o, new LessThanOrEqual());
+  }
+  
+  public Condition<GreaterThanOrEqual> gte(Object o){
+    return new Condition<>(this, o, new GreaterThanOrEqual());
+  }
+  
 }

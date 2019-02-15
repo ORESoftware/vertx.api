@@ -66,6 +66,11 @@ public class Select<T extends BaseModel> implements IGetSQL, Cloneable {
     return this;
   }
   
+  public Select<T> where(Condition c) {
+    this.where = new Where(c);
+    return this;
+  }
+  
   @Override
   public String getSQL() {
     
@@ -116,13 +121,13 @@ public class Select<T extends BaseModel> implements IGetSQL, Cloneable {
       b.append("\n");
       
       b.append(
-        Utils.join("FROM", this.from.getSQL())
+        Utils.join(" FROM", this.from.getSQL())
       );
       
       b.append("\n");
       
       if (this.where != null) {
-        b.append(this.where.getSQL());
+        b.append(" WHERE " + this.where.getSQL());
       }
       
       return b.toString();

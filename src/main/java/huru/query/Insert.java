@@ -22,7 +22,6 @@ public class Insert<T extends BaseModel> {
     return this;
   }
   
-  
   public Insert<T> values(InsertionValue... values){
      this.values.addAll(Arrays.asList(values));
      return this;

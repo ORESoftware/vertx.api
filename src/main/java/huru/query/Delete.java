@@ -7,7 +7,6 @@ public class Delete<T extends BaseModel> {
   private T model;
   private String table;
   
-  
   public Delete(T model) {
     this.model = model;
   }

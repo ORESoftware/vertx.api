@@ -1,6 +1,5 @@
 package huru.query;
 
-
 import huru.entity.BaseModel;
 
 import java.sql.ResultSet;
@@ -26,6 +25,14 @@ public class QueryBuilder<T extends BaseModel> {
   }
   
   public Select<T> select(){
+    return new Select<T>(this.model);
+  }
+  
+  public Select<T> selectAll(){
+    return new Select<T>(this.model);
+  }
+  
+  public Select<T> selectOnly(){
     return new Select<T>(this.model);
   }
   

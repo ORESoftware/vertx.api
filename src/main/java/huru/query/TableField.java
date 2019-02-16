@@ -8,7 +8,7 @@ import huru.query.ComparisonOperators.*;
 import io.vertx.core.json.JsonObject;
 
 
-public class TableField {
+public class TableField implements Cloneable {
   
 //  private Set<Class<? extends Annotation>> annots = new HashSet<>();
   //  private HashMap<Class<? extends Annotation>, Object> annotationMap = new HashMap<>();
@@ -18,28 +18,43 @@ public class TableField {
   private String tableName;
   private String alias;
   private Object value;  // for INSERT INTO
-  
+  private boolean ignoreDuringQuery = false;
+  private boolean forceIncludeQuery = false;
   
   public TableField(String k, String v) {
     this.dbName = k;
     this.runtimeName = v;
   }
   
-  
-  public TableField(String k, String v, String as,  HashMap<String, Object> annotationMap, String tableName) {
+  public TableField(String k, String v,  HashMap<String, Object> annotationMap, String tableName) {
     this.dbName = k;
     this.runtimeName = v;
-    this.alias = as;
     this.annotationMap = annotationMap;
     this.tableName = tableName;
   }
   
-  public TableField(String k, String v,  HashMap<String, Object> annotationMap, Object value, String tableName) {
-    this.dbName = k;
-    this.runtimeName = v;
+  public boolean isForceIncludeQuery() {
+    return forceIncludeQuery;
+  }
+  
+  public void setForceIncludeQuery(boolean forceIncludeQuery) {
+    this.forceIncludeQuery = forceIncludeQuery;
+  }
+  
+  public boolean isIgnoreDuringQuery() {
+    return ignoreDuringQuery;
+  }
+  
+  public void setIgnoreDuringQuery(boolean ignoreDuringQuery) {
+    this.ignoreDuringQuery = ignoreDuringQuery;
+  }
+  
+  public Object getValue() {
+    return value;
+  }
+  
+  public void setValue(Object value) {
     this.value = value;
-    this.annotationMap = annotationMap;
-    this.tableName = tableName;
   }
   
   public String getTableName() {
@@ -71,7 +86,6 @@ public class TableField {
     return this.runtimeName;
   }
   
-  
   public boolean hasAnnotation(Annotation a) {
     return this.annotationMap.containsKey(a);
   }
@@ -90,24 +104,38 @@ public class TableField {
 //    this.annotationMap.get(Annotations.NotNull.class);
   }
   
-  public TableField as(String s) {
+  public Object clone(){
     return new TableField(
       this.dbName,
       this.runtimeName,
-      s,
-      new HashMap<String,Object>(this.annotationMap),
+      new HashMap<>(this.annotationMap),
       this.tableName
     );
   }
   
+  public TableField as(String s) {
+    var t = (TableField)this.clone();
+    t.setAlias(s);
+    return t;
+  }
+  
   public TableField val(Object v) {
-    return new TableField(
-      this.dbName,
-      this.runtimeName,
-      this.annotationMap,
-      v,
-      this.tableName
-    );
+    var t = (TableField)this.clone();
+    t.setValue(v);
+    return t;
+  }
+  
+  public TableField skipIf(boolean expression) {
+    var t = (TableField)this.clone();
+    t.setIgnoreDuringQuery(expression);
+    return t;
+  }
+  
+  
+  public TableField includeIf(boolean expression) {
+    var t = (TableField)this.clone();
+    t.setForceIncludeQuery(expression);
+    return t;
   }
   
   public String toString() {
@@ -122,6 +150,7 @@ public class TableField {
   public Condition<NotEqualTo> neq(Object o){
     return new Condition<>(this, o, new NotEqualTo());
   }
+  
   public Condition<NotEqualTo> notEq(Object o){
     return this.neq(o);
   }

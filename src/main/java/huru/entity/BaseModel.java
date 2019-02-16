@@ -1,9 +1,9 @@
 package huru.entity;
 
 import java.util.Date;
+import static huru.entity.InterfaceContainer.*;
 
-
-public abstract class BaseModel {
+public abstract class BaseModel implements IModelHelper {
   
   private String createdBy;
   private Date createdAt;

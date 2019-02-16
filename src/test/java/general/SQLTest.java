@@ -29,7 +29,10 @@ public class SQLTest {
     var u = User.Model;
     
     var sql = qb.select()
-      .fields(u.EMAIL, u.HANDLE.as("foo"))
+      .fields(
+        u.EMAIL,
+        u.HANDLE.as("foo")
+      )
       .from(Tables.UserTable)
       .where(
         AND(u.EMAIL.eq("alex@gmail.com"), OR(u.HANDLE.gt(5), u.ID.eq("my id"),u.ID.neq("my id"))))

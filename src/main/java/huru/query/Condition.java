@@ -4,7 +4,7 @@ import static huru.entity.Models.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+import static huru.query.Conditionals.*;
 
 public class Condition<T> implements Base.IGetSQL {
   

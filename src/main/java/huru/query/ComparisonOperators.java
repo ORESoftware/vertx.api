@@ -8,7 +8,6 @@ public class ComparisonOperators<T> {
 
   
   public static class GreaterThanOrEqual  extends ComparisonOperator<GreaterThanOrEqual> {
-  
     public String toString(){
       return ">=";
     }

@@ -33,8 +33,22 @@ public class Models {
     public String getTableName() {
       return User.tableName;
     }
+  
+  
+    @Override
+    public void validateForUpdate(BaseModel m) {
     
+    }
+  
+    @Override
+    public void validateForInsert(BaseModel m) {
     
+    }
+  
+    @Override
+    public void validate(BaseModel m) {
+    
+    }
   }
   
   @SetTable(Klass.tableName)
@@ -53,6 +67,21 @@ public class Models {
     @Override
     public String getTableName() {
       return Klass.tableName;
+    }
+  
+    @Override
+    public void validateForUpdate(BaseModel m) {
+    
+    }
+  
+    @Override
+    public void validateForInsert(BaseModel m) {
+    
+    }
+  
+    @Override
+    public void validate(BaseModel m) {
+    
     }
   }
   

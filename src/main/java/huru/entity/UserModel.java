@@ -8,10 +8,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Field;
 import java.util.*;
-
 import static huru.entity.InterfaceContainer.IModelHelper;
 import static huru.entity.InterfaceContainer.IMapEnum;
-
 import static huru.entity.Annotations.*;
 
 class Helper implements IModelHelper<UserModel> {
@@ -46,6 +44,21 @@ public class UserModel extends BaseModel {
   @Override
   public String getTableName() {
     return null;
+  }
+  
+  @Override
+  public void validateForUpdate(BaseModel m) {
+  
+  }
+  
+  @Override
+  public void validateForInsert(BaseModel m) {
+  
+  }
+  
+  @Override
+  public void validate(BaseModel m) {
+  
   }
   
   public static class Model extends HashMap<String,Object> {

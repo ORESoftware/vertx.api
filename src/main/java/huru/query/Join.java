@@ -4,7 +4,6 @@ import static huru.query.Joins.*;
 
 public class Join {
   
-  
   public static Inner Inner(Table t, Table x) {
     return new Inner(t, x);
   }
@@ -22,7 +21,7 @@ public class Join {
   }
   
   public static Outer Outer(Table x, Table y, Table... z) {
-    return new Outer(x, y, z);
+    return new Outer(x, Join.Outer(y, z[0]));
   }
   
   public static Outer Outer(Table t, AbstractJoin x) {
@@ -52,6 +51,5 @@ public class Join {
   public static Full Full(Table t, AbstractJoin x) {
     return new Full(t, x);
   }
-  
   
 }

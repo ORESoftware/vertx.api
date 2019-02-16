@@ -2,9 +2,12 @@ package huru.query;
 
 class Base {
   
-  static interface IGetSQL {
+   interface IGetSQL {
     String getSQL();
   }
   
+  interface IGetJoinName{
+    String getJoinName();
+  }
   
 }

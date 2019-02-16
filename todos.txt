@@ -83,3 +83,16 @@ https://stackoverflow.com/questions/7507121/efficient-way-to-handle-resultset-in
 https://stackoverflow.com/questions/54660577/install-eclipse-incremental-java-compiler-on-ubuntu-without-installing-eclipse
 
 java -jar ecj.jar -classpath rt.jar A.java
+
+
+SELECT
+  A.email,
+  A.handle
+FROM
+  (
+    user_table AS A
+    OUTER JOIN (
+      klass_table AS B
+      LEFT JOIN user_table AS A
+    )
+  )

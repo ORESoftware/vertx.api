@@ -39,7 +39,6 @@ public class Table {
     TableMap.TableMap.put(name,this);
   }
   
-  
   public String getName() {
     return name;
   }

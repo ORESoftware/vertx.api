@@ -1,14 +1,20 @@
 package huru.query;
 
-import java.util.HashSet;
-
-abstract class AbstractJoin<T> implements Base.IGetSQL {
+abstract class AbstractJoin<T> implements Base.IGetSQL, Base.IGetJoinName {
   
   //  protected HashSet<Table> tables = new HashSet<Table>();
   protected Table left;
   protected Table right;
   protected AbstractJoin join;
   private Condition condition;
+  
+  public AbstractJoin(){
+  
+  }
+  
+  public AbstractJoin(AbstractJoin join){
+    this.join = join;
+  }
   
   public AbstractJoin(Table left, Table right) {
     this.left = left;
@@ -33,5 +39,22 @@ abstract class AbstractJoin<T> implements Base.IGetSQL {
     this.condition = condition;
   }
   
+  public String getSQL() {
+    StringBuilder b = new StringBuilder();
+    
+    b.append(" ( ");
+    b.append(this.left.getName());
+    b.append(String.join(" "," ",this.getJoinName()));
+    
+    if (this.right != null) {
+      b.append(String.join(" ", " ", this.right.getName()));
+    } else {
+      b.append(String.join(" ", " ", this.join.getSQL()));
+    }
+    
+    b.append(" ) ");
+    
+    return b.toString();
+  }
   
 }

@@ -72,7 +72,7 @@ public class GeneralTest {
 //    var field = new SelectField(){
 //
 //      @Override
-//      public String getName() {
+//      public String getJoinName() {
 //        return "barf";
 //      }
 //

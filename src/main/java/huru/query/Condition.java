@@ -1,8 +1,6 @@
 package huru.query;
 
-import huru.entity.Model;
-import huru.entity.Models;
-
+import static huru.entity.Models.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +42,6 @@ public class Condition<T> implements Base.IGetSQL {
     
     ArrayList<Condition> c = new ArrayList<>();
     
-    Models.User user = Model.User;
     
 //    c.add(Condition.AND(Condition.AND(user.EMAIL.eq(3), user.EMAIL.gte(6)), Condition.OR()));
     

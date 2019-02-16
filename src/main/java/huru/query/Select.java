@@ -56,6 +56,11 @@ public class Select<T extends BaseModel> implements IGetSQL, Cloneable {
     return this;
   }
   
+  public Select<T> allExcept() {
+    this.selectAll = true;
+    return this;
+  }
+  
   public Select<T> from(Table t) {
     this.from = new From(t);
     return this;

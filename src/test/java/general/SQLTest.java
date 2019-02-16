@@ -1,14 +1,17 @@
 package general;
 
 import huru.entity.*;
-import huru.entity.Model;
 import huru.query.Bootstrapper;
 import huru.query.Condition;
 import huru.query.QueryBuilder;
+import huru.query.TableField;
 import org.junit.Test;
 
+import static huru.entity.Models.*;
 import java.util.Arrays;
 import java.util.List;
+
+import static huru.query.Condition.*;
 
 public class SQLTest {
   
@@ -20,28 +23,16 @@ public class SQLTest {
       Models.User.class,
       Models.Klass.class
     );
-
-//    for(Class<? extends BaseModel> b: annots){
-//      QueryBuilder<?> qb = Bootstrapper.bootstrap(b);
-//    }
-//
-//    Models.User user = Model.User;
-//    QueryBuilder<Models.User> qb = new QueryBuilder<>(user);
-
-//    var sql = qb.select()
-//      .all()
-//      .from(user.getTableName())
-//      .getSQL();
     
-    QueryBuilder<Models.User> qb = Bootstrapper.bootstrap(Models.User.class);
-    Models.User user = qb.getModel();
     
+    QueryBuilder<User> qb = new QueryBuilder<User>(User.Model);
+    var u = User.Model;
     
     var sql = qb.select()
-      
-      .fields(user.EMAIL, user.HANDLE.as("foo"))
+      .fields(u.EMAIL, u.HANDLE.as("foo"))
       .from(Tables.UserTable)
-      .where(Condition.AND(user.EMAIL.eq("alex@gmail.com"), Condition.OR(user.HANDLE.gt(5), user.ID.eq("my id"),user.ID.neq("my id"))))
+      .where(
+        AND(u.EMAIL.eq("alex@gmail.com"), OR(u.HANDLE.gt(5), u.ID.eq("my id"),u.ID.neq("my id"))))
 //      .from(new Table("randy"))
         .getSQL();
     

@@ -13,6 +13,7 @@ import io.vertx.ext.sql.SQLRowStream;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import org.apache.log4j.Logger;
+import static huru.entity.Models.*;
 
 import static huru.routes.RouteHelper.getSQLConnection;
 import static huru.routes.RouteHelper.handleSQLResponse;
@@ -27,8 +28,7 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
   private static final Logger log = Logger.getLogger(JWTHandler.class);
   private SQLClient client;
   private Map<String, JsonObject> products = new HashMap<>();
-  private Models.User User = Model.User;
-  private final QueryBuilder<Models.User> qb = new QueryBuilder<>(User);
+  private final QueryBuilder<User> qb = new QueryBuilder<>(User.Model);
   
   public KCUser(SQLClient client) {
     super();
@@ -75,9 +75,10 @@ public class KCUser implements IBasicHandler, Handler<RoutingContext> {
     getSQLConnection(this.client, ctx, conn -> {
       
       String id = ctx.request().getParam("id");
+      var u = User.Model;
       
       String sql = qb.select()
-        .fields(User.EMAIL, User.ID.as("foo"))
+        .fields(u.EMAIL, u.ID.as("foo"))
         .from(Tables.UserTable)
         .getSQL();
       

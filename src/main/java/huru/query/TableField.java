@@ -5,6 +5,7 @@ import huru.entity.TableMap;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import huru.query.ComparisonOperators.*;
+import io.vertx.core.json.JsonObject;
 
 
 public class TableField {
@@ -120,6 +121,9 @@ public class TableField {
   
   public Condition<NotEqualTo> neq(Object o){
     return new Condition<>(this, o, new NotEqualTo());
+  }
+  public Condition<NotEqualTo> notEq(Object o){
+    return this.neq(o);
   }
   
   public Condition<GreaterThan> gt(Object o){

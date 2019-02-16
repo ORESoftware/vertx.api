@@ -21,7 +21,9 @@ public class Bootstrapper {
     DefaultValue.class
   );
   
-  public static <T extends BaseModel> QueryBuilder<T> bootstrap(Class<T> k, Object... args) {
+  public static <T extends BaseModel> T bootstrap(Class<T> k, Object... args) {
+
+//  public static <T extends BaseModel> QueryBuilder<T> bootstrap(Class<T> k, Object... args) {
     
     try {
       
@@ -99,7 +101,10 @@ public class Bootstrapper {
         
       }
       
-      return new QueryBuilder<T>(v);
+//      return new QueryBuilder<T>(v);
+      
+      return v;
+      
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

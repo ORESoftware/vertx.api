@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import io.vertx.core.Future;
 import io.vertx.ext.web.handler.BodyHandler;
 
+import static huru.entity.Models.*;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.List;
@@ -69,14 +70,7 @@ public class MainVerticle extends AbstractVerticle {
 
 //    final Vertx vertx = Vertx.vertx();
   
-    List<Class<? extends BaseModel>> annots = Arrays.asList(
-      Models.User.class,
-      Models.Klass.class
-    );
-    
-    for(Class<? extends BaseModel> b: annots){
-      QueryBuilder<?> qb = Bootstrapper.bootstrap(b);
-    }
+    QueryBuilder<User> qb = new QueryBuilder<User>(User.Model);
     
     
     log.info("foo");

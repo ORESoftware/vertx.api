@@ -1,11 +1,9 @@
 package huru.query;
 
 import huru.entity.BaseModel;
-import huru.entity.Table;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Set;
 
 public class Insert<T extends BaseModel> {
   

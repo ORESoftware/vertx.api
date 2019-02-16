@@ -1,7 +1,6 @@
 package huru.query;
 
 import huru.entity.BaseModel;
-import huru.entity.Table;
 import huru.entity.TableMap;
 import huru.util.Utils;
 
@@ -72,6 +71,16 @@ public class Select<T extends BaseModel> implements IGetSQL, Cloneable {
   
   public Select<T> from(Table t) {
     this.from = new From(t);
+    return this;
+  }
+  
+  public Select<T> from(Table t, Table x, Table... z) {
+    this.from = new From(t,x,z);
+    return this;
+  }
+  
+  public Select<T> from(AbstractJoin j) {
+    this.from = new From(j);
     return this;
   }
   

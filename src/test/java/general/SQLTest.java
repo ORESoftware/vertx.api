@@ -35,7 +35,7 @@ public class SQLTest {
       )
       .from(Tables.UserTable)
       .where(
-        AND(u.EMAIL.eq("alex@gmail.com"), OR(u.HANDLE.gt(5), u.ID.eq("my id"),u.ID.neq("my id"))))
+        AND(u.EMAIL.eq("alex@gmail.com"), OR(u.HANDLE.gt(u.HANDLE), u.ID.eq("my id"),u.ID.neq("my id"))))
 //      .from(new Table("randy"))
         .getSQL();
     

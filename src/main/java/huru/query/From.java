@@ -1,33 +1,36 @@
 package huru.query;
 
-import huru.entity.Table;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-
-public class From implements Base.IGetSQL {
+public class From<T extends AbstractJoin> implements Base.IGetSQL {
 
   //  String simple;
   
-  private AbstractJoin join;
+  private Table t;
+  private AbstractJoin<T> join;
   
   //  public From(String simple){
   //    this.simple = simple;
   //  }
   
-  public From(Table... t){
-    this.join = Join.Outer(t);
+  public From(Table t){
+    this.t = t;
   }
   
-  public From(AbstractJoin join){
+  public From(Table x, Table y, Table... z){
+    this.join = Join.Outer(x,y,z);
+  }
+  
+  public From(AbstractJoin<T> join){
     this.join = join;
   }
   
   
   @Override
   public String getSQL() {
-//    return String.join(" ", this.table.getName(), this.table.getAlias());
+    
+    if(this.t != null){
+      return String.join(" ", this.t.getName(), this.t.getAlias());
+    }
+    
     return String.join(" ", this.join.getSQL());
   }
 }

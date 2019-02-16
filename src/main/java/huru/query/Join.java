@@ -1,37 +1,57 @@
 package huru.query;
 
-import huru.entity.Table;
-
-import java.util.HashSet;
-
 import static huru.query.Joins.*;
 
 public class Join {
   
   
-  public static Inner Inner(){
-    return new Inner();
+  public static Inner Inner(Table t, Table x) {
+    return new Inner(t, x);
   }
   
-  public static Cross Cross(){
-    return new Cross();
+  public static Inner Inner(Table t, AbstractJoin x) {
+    return new Inner(t, x);
   }
   
-  public static Outer Outer(Table... t){
-    return new Outer(t);
-  }
-
-  
-  public static Left Left(){
-    return new Left();
+  public static Cross Cross(Table t, Table x) {
+    return new Cross(t, x);
   }
   
-  public static Right Right(){
-    return new Right();
+  public static Cross Cross(Table t, AbstractJoin x) {
+    return new Cross(t, x);
   }
   
-  public static Full Full(){
-    return new Full();
+  public static Outer Outer(Table x, Table y, Table... z) {
+    return new Outer(x, y, z);
   }
+  
+  public static Outer Outer(Table t, AbstractJoin x) {
+    return new Outer(t, x);
+  }
+  
+  public static Left Left(Table t, Table x) {
+    return new Left(t, x);
+  }
+  
+  public static Left Left(Table t, AbstractJoin x) {
+    return new Left(t, x);
+  }
+  
+  public static Right Right(Table t, Table x) {
+    return new Right(t, x);
+  }
+  
+  public static Right Right(Table t, AbstractJoin x) {
+    return new Right(t, x);
+  }
+  
+  public static Full Full(Table t, Table x) {
+    return new Full(t, x);
+  }
+  
+  public static Full Full(Table t, AbstractJoin x) {
+    return new Full(t, x);
+  }
+  
   
 }

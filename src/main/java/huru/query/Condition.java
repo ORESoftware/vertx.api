@@ -57,7 +57,14 @@ public class Condition<T> implements Base.IGetSQL {
     
     b.append(this.lhs.getDbName() + " ");
     b.append(this.op.toString() + " ");
-    b.append(this.rhs.toString());
+    
+    if(this.rhs instanceof TableField){
+      b.append(this.lhs.getDbName());
+    }
+    else{
+      b.append(this.rhs.toString());
+    }
+    
   
     b.append(" ) ");
   

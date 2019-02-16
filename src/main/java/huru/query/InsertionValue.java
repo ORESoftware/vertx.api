@@ -14,7 +14,7 @@ public class InsertionValue {
     }
     
     if(((InsertionValue)o).f != this.f){
-       return true;
+       return false;
     }
     
     return true;

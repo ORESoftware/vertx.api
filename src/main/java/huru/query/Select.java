@@ -18,6 +18,10 @@ public class Select<T extends BaseModel> implements IGetSQL, Cloneable {
   private boolean selectAll = false;
   private boolean selectAllExcept = false;
   
+  public Select(){
+  
+  }
+  
   public Select(T model) {
     this.model = model;
   }
@@ -45,6 +49,10 @@ public class Select<T extends BaseModel> implements IGetSQL, Cloneable {
 //    this.fields.addAll(s);
 //    return this;
 //  }
+  
+  public SelectWithAlias as(){
+    return new SelectWithAlias();
+  }
   
   public Select<T> fields(TableField... s) {
     this.fields.addAll(Arrays.asList(s));

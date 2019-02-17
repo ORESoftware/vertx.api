@@ -28,7 +28,7 @@ class AliasMaker {
   }
 }
 
-public class Table {
+public class Table implements Cloneable {
   
   public String alias;
   public String name;
@@ -39,6 +39,12 @@ public class Table {
     TableMap.TableMap.put(name,this);
   }
   
+  public Table(String name, String alias){
+    this.name = name;
+    this.alias = alias;
+    TableMap.TableMap.put(name, this);
+  }
+  
   public String getName() {
     return name;
   }
@@ -47,12 +53,28 @@ public class Table {
     this.name = name;
   }
   
+  public Table clone(){
+    return new Table(this.name, this.alias);
+  }
+  
   public String getAlias() {
     return alias;
   }
   
   public void setAlias(String alias) {
     this.alias = alias;
+  }
+  
+  public Table alias(String a){
+    var t = this.clone();
+    t.setAlias(a);
+    return t;
+  }
+  
+  public Table as(String a){
+    var t = this.clone();
+    t.setAlias(a);
+    return t;
   }
   
   public Joins.Inner innerJoin(Table t){

@@ -6,6 +6,7 @@ import java.util.List;
 
 public class Conditionals {
   
+  
   public static class OR extends Condition {
     
     public ArrayList<Condition> conditions = new ArrayList<>();
@@ -44,11 +45,7 @@ public class Conditionals {
       return b.toString();
       
     }
-
-//    public OR(Condition... c){
-//      this.conditions.addAll(Arrays.asList(c));
-//    }
-  
+    
   }
   
   

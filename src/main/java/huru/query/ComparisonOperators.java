@@ -42,5 +42,17 @@ public class ComparisonOperators<T> {
     }
   }
   
+  public static class Like extends ComparisonOperator<Like> {
+    public String toString(){
+      return "LIKE";
+    }
+  }
+  
+  public static class NotLike extends ComparisonOperator<NotLike> {
+    public String toString(){
+      return "NOT LIKE";
+    }
+  }
+  
   
 }

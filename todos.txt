@@ -96,3 +96,24 @@ FROM
       LEFT JOIN user_table AS A
     )
   )
+
+
+MAX, MIN, SUM, AVG, COUNT, DISTINCT
+
+limit(int)
+limit(new Select())?
+
+SELECT * FROM Products
+WHERE Price > SOME (SELECT Price FROM Products WHERE Price > 20);
+
+SELECT * FROM Products
+WHERE Price > ALL (SELECT Price FROM Products WHERE Price > 500);
+
+SELECT * FROM Customers
+WHERE City IN ('Paris','London');
+
+
+https://www.w3schools.com/sql/sql_operators.asp
+
+
+https://zeroturnaround.com/software/jrebel/quickstart/intellij/enable-automatic-compilation-in-intellij-idea/

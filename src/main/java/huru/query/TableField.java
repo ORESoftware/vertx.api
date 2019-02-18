@@ -151,6 +151,14 @@ public class TableField implements Cloneable {
     return new Condition<>(this, o, new NotEqualTo());
   }
   
+  public Condition<Like> like(String o){
+    return new Condition<>(this, o, new Like());
+  }
+  
+  public Condition<NotLike> notLike(String o){
+    return new Condition<>(this, o, new NotLike());
+  }
+  
   public Condition<NotEqualTo> notEq(Object o){
     return this.neq(o);
   }

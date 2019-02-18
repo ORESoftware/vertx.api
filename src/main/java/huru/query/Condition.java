@@ -82,13 +82,19 @@ public class Condition<T> implements Base.IGetSQL {
       
     } else {
   
-      var v = this.rhs.toString();
+      var v = this.rhs;
       
-      if(v.contains(" ")){
-        v = String.join("","'",v,"'");
+      if(this.rhs instanceof String){
+        v = ((String)v).replace("'","''");  // escape single-quotes
+      }
+  
+      String bug = v.toString();
+      
+      if(bug.contains(" ")){
+        bug = String.join("","'",bug,"'");
       }
       
-      b.append(v);
+      b.append(bug);
     }
     
     b.append(" ) ");
